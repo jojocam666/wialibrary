@@ -449,9 +449,9 @@ def timestamp_from_utc_now():
 def address(s):
     if s == "":
         raise Exception('"" is not a valid address')
-    if not (any(s.startswith(prefix) for prefix in ["KT1", "tz1", "tz2", "tz3"])):
+    if not (any(s.startswith(prefix) for prefix in ["WL1", "li1", "li2", "li3"])):
         raise Exception(
-            '"%s" is not a valid address, it should start with tz1, tz2, tz3 or KT1.'
+            '"%s" is not a valid address, it should start with li1, li2, li3 or WL1.'
             % s
         )
     return literal("address", s)
