@@ -225,31 +225,31 @@ def read_config():
     else:
         WIL_CONFIG_FILE = Path(config_file_name)
         if not WIL_CONFIG_FILE.is_absolute():
-            WIL_CONFIG_FILE = Path(Path.home(), '.bitcoinlib', BCL_CONFIG_FILE)
-        if not BCL_CONFIG_FILE.exists():
+            WIL_CONFIG_FILE = Path(Path.home(), '.wialib', WIL_CONFIG_FILE)
+        if not WIL_CONFIG_FILE.exists():
             WIL_CONFIG_FILE = Path(WIL_INSTALL_DIR, 'data', config_file_name)
         if not WIL_CONFIG_FILE.exists():
-            raise IOError('Bitcoinlib configuration file not found: %s' % str(WIL_CONFIG_FILE))
+            raise IOError('wialib configuration file not found: %s' % str(WIL_CONFIG_FILE))
     data = config.read(str(WIL_CONFIG_FILE))
-    WIL_DATA_DIR = Path(config_get('locations', 'data_dir', fallback='~/.bitcoinlib')).expanduser()
+    WIL_DATA_DIR = Path(config_get('locations', 'data_dir', fallback='~/.wialib')).expanduser()
 
     # Database settings
     WIL_DATABASE_DIR = Path(WIL_DATA_DIR, config_get('locations', 'database_dir', 'database'))
     WIL_DATABASE_DIR.mkdir(parents=True, exist_ok=True)
     default_databasefile = DEFAULT_DATABASE = \
-        config_get('locations', 'default_databasefile', fallback='bitcoinlib.sqlite')
+        config_get('locations', 'default_databasefile', fallback='wialib.sqlite')
     if not default_databasefile.startswith('postgresql') or default_databasefile.startswith('mysql'):
-        DEFAULT_DATABASE = str(Path(BCL_DATABASE_DIR, default_databasefile))
+        DEFAULT_DATABASE = str(Path(WIL_DATABASE_DIR, default_databasefile))
     default_databasefile_cache = DEFAULT_DATABASE_CACHE = \
-        config_get('locations', 'default_databasefile_cache', fallback='bitcoinlib_cache.sqlite')
+        config_get('locations', 'default_databasefile_cache', fallback='wialib_cache.sqlite')
     if not default_databasefile_cache.startswith('postgresql') or default_databasefile_cache.startswith('mysql'):
-        DEFAULT_DATABASE_CACHE = str(Path(BCL_DATABASE_DIR, default_databasefile_cache))
+        DEFAULT_DATABASE_CACHE = str(Path(WIL_DATABASE_DIR, default_databasefile_cache))
     ALLOW_DATABASE_THREADS = config_get("common", "allow_database_threads", fallback=True, is_boolean=True)
     SERVICE_CACHING_ENABLED = config_get('common', 'service_caching_enabled', fallback=True, is_boolean=True)
 
     # Log settings
-    ENABLE_BITCOINLIB_LOGGING = config_get("logs", "enable_bitcoinlib_logging", fallback=True, is_boolean=True)
-    WIL_LOG_FILE = Path(BCL_DATA_DIR, config_get('logs', 'log_file', fallback='bitcoinlib.log'))
+    ENABLE_WIALIB_LOGGING = config_get("logs", "enable_wialib_logging", fallback=True, is_boolean=True)
+    WIL_LOG_FILE = Path(WIL_DATA_DIR, config_get('logs', 'log_file', fallback='wialib.log'))
     WIL_LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
     LOGLEVEL = config_get('logs', 'loglevel', fallback=LOGLEVEL)
 
@@ -276,24 +276,24 @@ def read_config():
 
 # Copy data and settings to default settings directory if install.log is not found
 def initialize_lib():
-    global WIL_INSTALL_DIR, WIL_DATA_DIR, BITCOINLIB_VERSION
+    global WIL_INSTALL_DIR, WIL_DATA_DIR, WIALIB_VERSION
     instlogfile = Path(WIL_DATA_DIR, 'install.log')
     if instlogfile.exists():
         return
 
     with instlogfile.open('w') as f:
-        install_message = "BitcoinLib installed, check further logs in bitcoinlib.log\n\n" \
+        install_message = "wiaLib installed, check further logs in wialib.log\n\n" \
                           "If you remove this file all settings will be reset again to the default settings. " \
                           "This might be usefull after an update or when problems occur.\n\n" \
                           "Installation parameters. Include this parameters when reporting bugs and issues:\n" \
-                          "Bitcoinlib version: %s\n" \
+                          "wialib version: %s\n" \
                           "Installation date : %s\n" \
                           "Python            : %s\n" \
                           "Compiler          : %s\n" \
                           "Build             : %s\n" \
                           "OS Version        : %s\n" \
                           "Platform          : %s\n" % \
-                          (BITCOINLIB_VERSION, datetime.now().isoformat(), platform.python_version(),
+                          (WIALIB_VERSION, datetime.now().isoformat(), platform.python_version(),
                            platform.python_compiler(), platform.python_build(), platform.version(), platform.platform())
         f.write(install_message)
 
@@ -307,5 +307,5 @@ def initialize_lib():
 
 # Initialize library
 read_config()
-BITCOINLIB_VERSION = Path(WIL_INSTALL_DIR, 'config/VERSION').open().read().strip()
+WIALIB_VERSION = Path(WIL_INSTALL_DIR, 'config/VERSION').open().read().strip()
 initialize_lib()
