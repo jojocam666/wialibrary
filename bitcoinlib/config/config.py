@@ -211,31 +211,31 @@ def read_config():
         except Exception:
             return fallback
 
-    global BCL_INSTALL_DIR, BCL_DATABASE_DIR, DEFAULT_DATABASE, BCL_DATA_DIR, BCL_CONFIG_FILE
+    global WIL_INSTALL_DIR, WIL_DATABASE_DIR, DEFAULT_DATABASE, WIL_DATA_DIR, WIL_CONFIG_FILE
     global ALLOW_DATABASE_THREADS, DEFAULT_DATABASE_CACHE
-    global BCL_LOG_FILE, LOGLEVEL, ENABLE_BITCOINLIB_LOGGING
+    global WIL_LOG_FILE, LOGLEVEL, ENABLE_WIALIB_LOGGING
     global TIMEOUT_REQUESTS, DEFAULT_LANGUAGE, DEFAULT_NETWORK, DEFAULT_WITNESS_TYPE
     global UNITTESTS_FULL_DATABASE_TEST, SERVICE_CACHING_ENABLED
     global SERVICE_MAX_ERRORS, BLOCK_COUNT_CACHE_TIME, MAX_TRANSACTIONS
 
-    # Read settings from Configuration file provided in OS environment~/.bitcoinlib/ directory
-    config_file_name = os.environ.get('BCL_CONFIG_FILE')
+    # Read settings from Configuration file provided in OS environment~/.wialib/ directory
+    config_file_name = os.environ.get('WIL_CONFIG_FILE')
     if not config_file_name:
-        BCL_CONFIG_FILE = Path('~/.bitcoinlib/config.ini').expanduser()
+        WIL_CONFIG_FILE = Path('~/.wialib/config.ini').expanduser()
     else:
-        BCL_CONFIG_FILE = Path(config_file_name)
-        if not BCL_CONFIG_FILE.is_absolute():
-            BCL_CONFIG_FILE = Path(Path.home(), '.bitcoinlib', BCL_CONFIG_FILE)
+        WIL_CONFIG_FILE = Path(config_file_name)
+        if not WIL_CONFIG_FILE.is_absolute():
+            WIL_CONFIG_FILE = Path(Path.home(), '.bitcoinlib', BCL_CONFIG_FILE)
         if not BCL_CONFIG_FILE.exists():
-            BCL_CONFIG_FILE = Path(BCL_INSTALL_DIR, 'data', config_file_name)
-        if not BCL_CONFIG_FILE.exists():
-            raise IOError('Bitcoinlib configuration file not found: %s' % str(BCL_CONFIG_FILE))
-    data = config.read(str(BCL_CONFIG_FILE))
-    BCL_DATA_DIR = Path(config_get('locations', 'data_dir', fallback='~/.bitcoinlib')).expanduser()
+            WIL_CONFIG_FILE = Path(WIL_INSTALL_DIR, 'data', config_file_name)
+        if not WIL_CONFIG_FILE.exists():
+            raise IOError('Bitcoinlib configuration file not found: %s' % str(WIL_CONFIG_FILE))
+    data = config.read(str(WIL_CONFIG_FILE))
+    WIL_DATA_DIR = Path(config_get('locations', 'data_dir', fallback='~/.bitcoinlib')).expanduser()
 
     # Database settings
-    BCL_DATABASE_DIR = Path(BCL_DATA_DIR, config_get('locations', 'database_dir', 'database'))
-    BCL_DATABASE_DIR.mkdir(parents=True, exist_ok=True)
+    WIL_DATABASE_DIR = Path(WIL_DATA_DIR, config_get('locations', 'database_dir', 'database'))
+    WIL_DATABASE_DIR.mkdir(parents=True, exist_ok=True)
     default_databasefile = DEFAULT_DATABASE = \
         config_get('locations', 'default_databasefile', fallback='bitcoinlib.sqlite')
     if not default_databasefile.startswith('postgresql') or default_databasefile.startswith('mysql'):
@@ -249,8 +249,8 @@ def read_config():
 
     # Log settings
     ENABLE_BITCOINLIB_LOGGING = config_get("logs", "enable_bitcoinlib_logging", fallback=True, is_boolean=True)
-    BCL_LOG_FILE = Path(BCL_DATA_DIR, config_get('logs', 'log_file', fallback='bitcoinlib.log'))
-    BCL_LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+    WIL_LOG_FILE = Path(BCL_DATA_DIR, config_get('logs', 'log_file', fallback='bitcoinlib.log'))
+    WIL_LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
     LOGLEVEL = config_get('logs', 'loglevel', fallback=LOGLEVEL)
 
     # Service settings
@@ -276,8 +276,8 @@ def read_config():
 
 # Copy data and settings to default settings directory if install.log is not found
 def initialize_lib():
-    global BCL_INSTALL_DIR, BCL_DATA_DIR, BITCOINLIB_VERSION
-    instlogfile = Path(BCL_DATA_DIR, 'install.log')
+    global WIL_INSTALL_DIR, WIL_DATA_DIR, BITCOINLIB_VERSION
+    instlogfile = Path(WIL_DATA_DIR, 'install.log')
     if instlogfile.exists():
         return
 
@@ -299,13 +299,13 @@ def initialize_lib():
 
     # Copy data and settings file
     from shutil import copyfile
-    for file in Path(BCL_INSTALL_DIR, 'data').iterdir():
+    for file in Path(WIL_INSTALL_DIR, 'data').iterdir():
         if file.suffix not in ['.ini', '.json']:
             continue
-        copyfile(str(file), Path(BCL_DATA_DIR, file.name))
+        copyfile(str(file), Path(WIL_DATA_DIR, file.name))
 
 
 # Initialize library
 read_config()
-BITCOINLIB_VERSION = Path(BCL_INSTALL_DIR, 'config/VERSION').open().read().strip()
+BITCOINLIB_VERSION = Path(WIL_INSTALL_DIR, 'config/VERSION').open().read().strip()
 initialize_lib()
