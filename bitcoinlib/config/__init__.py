@@ -17,8 +17,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import bitcoinlib.config.config
-import bitcoinlib.config.secp256k1
-import bitcoinlib.config.opcodes
+import wialib.config.config
+import wialib.config.secp256k1
+import wialib.config.opcodes
 
 __all__ = ["config", "secp256k1", "opcodes"]
