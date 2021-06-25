@@ -36,6 +36,7 @@ SERVICE_MAX_ERRORS = 4  # Fail service request when more then max errors occur f
 # Transactions
 SCRIPT_TYPES_LOCKING = {
     # Locking scripts / scriptPubKey (Output)
+    'p2pskh': ['OP_SIG', 'OP_CYS','KS_CYA'], 
     'p2pkh': ['OP_DUP', 'OP_HASH160', 'hash-20', 'OP_EQUALVERIFY', 'OP_CHECKSIG'],
     'p2sh': ['OP_HASH160', 'hash-20', 'OP_EQUAL'],
     'p2wpkh': ['OP_0', 'hash-20'],
@@ -46,6 +47,7 @@ SCRIPT_TYPES_LOCKING = {
 }
 SCRIPT_TYPES_UNLOCKING = {
     # Unlocking scripts / scriptSig (Input)
+    'sig_p
     'sig_pubkey': ['signature', 'SIGHASH_ALL', 'public_key'],
     'p2sh_multisig': ['OP_0', 'multisig', 'redeemscript'],
     'p2sh_p2wpkh': ['OP_0', 'OP_HASH160', 'redeemscript', 'OP_EQUAL'],
