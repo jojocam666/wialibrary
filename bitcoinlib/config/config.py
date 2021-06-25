@@ -1,22 +1,4 @@
-# -*- coding: utf-8 -*-
-#
-#    BitcoinLib - Python Cryptocurrency Library
-#    CONFIG - Configuration settings
-#    © 2019 March - 1200 Web Development <http://1200wd.com/>
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+
 
 import os
 import locale
@@ -33,21 +15,21 @@ LOGLEVEL = 'WARNING'
 
 
 # File locations
-BCL_CONFIG_FILE = ''
-BCL_INSTALL_DIR = Path(__file__).parents[1]
-BCL_DATA_DIR = ''
-BCL_DATABASE_DIR = ''
+WIL_CONFIG_FILE = ''
+WIL_INSTALL_DIR = Path(__file__).parents[1]
+WIL_DATA_DIR = ''
+WIL_DATABASE_DIR = ''
 DEFAULT_DATABASE = None
 DEFAULT_DATABASE_CACHE = None
-BCL_LOG_FILE = ''
+WIL_LOG_FILE = ''
 
 # Main
-ENABLE_BITCOINLIB_LOGGING = True
+ENABLE_WIALIB_LOGGING = True
 ALLOW_DATABASE_THREADS = None
 
 # Services
 TIMEOUT_REQUESTS = 5
-MAX_TRANSACTIONS = 20
+MAX_TRANSACTIONS = 200
 BLOCK_COUNT_CACHE_TIME = 3
 SERVICE_MAX_ERRORS = 4  # Fail service request when more then max errors occur for <SERVICE_MAX_ERRORS> providers
 
