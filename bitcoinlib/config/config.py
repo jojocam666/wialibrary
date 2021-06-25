@@ -125,6 +125,7 @@ WALLET_KEY_STRUCTURES = [
         'description': 'Single key wallet with no hierarchical deterministic key structure',
         'key_path': ['m']
     },
+    
     {
         'purpose': 44,
         'script_type': 'p2pkh',
@@ -132,6 +133,15 @@ WALLET_KEY_STRUCTURES = [
         'multisig': False,
         'encoding': 'base58',
         'description': 'Legacy wallet using pay-to-public-key-hash scripts',
+        'key_path': ["m", "purpose'", "coin_type'",  "account'", "change", "address_index"]
+    },
+    {
+        'purpose': 44,
+        'script_type': 'p2pskh',
+        'witness_type': 'legacy',
+        'multisig': False,
+        'encoding': 'base58',
+        'description': 'Legacy wallet using pay-to-public-and-symetric-key-hash scripts',
         'key_path': ["m", "purpose'", "coin_type'",  "account'", "change", "address_index"]
     },
     {
