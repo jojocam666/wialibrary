@@ -47,7 +47,7 @@ SCRIPT_TYPES_LOCKING = {
 }
 SCRIPT_TYPES_UNLOCKING = {
     # Unlocking scripts / scriptSig (Input)
-    'sig_p
+    'sig_pub_sym_key':['signature', 'sym_crypted_message', 'sym_key', 'public_key'],
     'sig_pubkey': ['signature', 'SIGHASH_ALL', 'public_key'],
     'p2sh_multisig': ['OP_0', 'multisig', 'redeemscript'],
     'p2sh_p2wpkh': ['OP_0', 'OP_HASH160', 'redeemscript', 'OP_EQUAL'],
@@ -76,8 +76,8 @@ SIGNATURE_VERSION_SEGWIT = 1
 DEFAULT_LANGUAGE = 'english'
 
 # Networks
-DEFAULT_NETWORK = 'bitcoin'
-NETWORK_DENOMINATORS = {  # source: https://en.bitcoin.it/wiki/Units, https://en.wikipedia.org/wiki/Metric_prefix
+DEFAULT_NETWORK = 'wia'
+NETWORK_DENOMINATORS = {  
     0.00000000000001: 'µsat',
     0.00000000001: 'msat',
     0.000000001: 'n',
@@ -111,7 +111,7 @@ elif locale.getpreferredencoding() != 'UTF-8':
 
 # Keys / Addresses
 SUPPORTED_ADDRESS_ENCODINGS = ['base58', 'bech32']
-ENCODING_BECH32_PREFIXES = ['bc', 'tb', 'ltc', 'tltc', 'tdash', 'tdash', 'blt']
+ENCODING_BECH32_PREFIXES = ['WL1', 'wi', 'wi1', 'wi2', 'li', 'li1', 'li2']
 DEFAULT_WITNESS_TYPE = 'legacy'
 
 # Wallets
