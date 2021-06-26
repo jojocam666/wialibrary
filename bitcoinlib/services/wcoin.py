@@ -1,36 +1,18 @@
-# -*- coding: utf-8 -*-
-#
-#    BitcoinLib - Python Cryptocurrency Library
-#    Client for Bcoin Node
-#    © 2019 June - 1200 Web Development <http://1200wd.com/>
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-
-from bitcoinlib.main import *
-from bitcoinlib.services.baseclient import BaseClient, ClientError
-from bitcoinlib.transactions import Transaction, transaction_update_spents
 
 
-PROVIDERNAME = 'bcoin'
+from wialib.main import *
+from wialib.services.baseclient import BaseClient, ClientError
+from wialib.transactions import Transaction, transaction_update_spents
+
+
+PROVIDERNAME = 'wcoin'
 
 _logger = logging.getLogger(__name__)
 
 
-class BcoinClient(BaseClient):
+class WcoinClient(BaseClient):
     """
-    Class to interact with Bcoin API
+    Class to interact with Wcoin API
     """
 
     def __init__(self, network, base_url, denominator, *args):
@@ -69,10 +51,10 @@ class BcoinClient(BaseClient):
 
     def getbalance(self, addresslist):
         balance = 0.0
-        from bitcoinlib.services.services import Service
+        from wialib.services.services import Service
         for address in addresslist:
             # First get all transactions for this address from the blockchain
-            srv = Service(network=self.network.name, providers=['bcoin'])
+            srv = Service(network=self.network.name, providers=['wcoin'])
             txs = srv.gettransactions(address, limit=25)
 
             # Fail if large number of transactions are found
