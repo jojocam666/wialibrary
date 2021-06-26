@@ -56,9 +56,9 @@
   },
   
   "cryptofees": {
-    "provider": "coinfees",
+    "provider": "cryptofees",
     "network": "wia",
-    "client_class": "CoinfeesClient",
+    "client_class": "CryptoClient",
     "provider_coin_id": "",
     "url": "https://wiafees.earn.com/api/v1/",
     "api_key": "",
