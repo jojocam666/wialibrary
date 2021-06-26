@@ -72,8 +72,8 @@ class WcoinClient(BaseClient):
 
     def getutxos(self, address, after_txid='', limit=MAX_TRANSACTIONS):
         # First get all transactions for this address from the blockchain
-        from bitcoinlib.services.services import Service
-        srv = Service(network=self.network.name, providers=['bcoin'])
+        from wialib.services.services import Service
+        srv = Service(network=self.network.name, providers=['wcoin'])
         txs = srv.gettransactions(address, limit=25)
 
         # Fail if large number of transactions are found
