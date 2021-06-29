@@ -29,46 +29,46 @@ def _read_from_config(configparser, section, value, fallback=None):
         return fallback
 
 
-class BitcoindClient(BaseClient):
+class WiadClient(BaseClient):
     """
-    Class to interact with bitcoind, the Bitcoin deamon
+    Class to interact with wiad, the Wia deamon
     """
 
     @staticmethod
-    def from_config(configfile=None, network='bitcoin'):
+    def from_config(configfile=None, network='wia'):
         """
-        Read settings from bitcoind config file
+        Read settings from wiad config file
 
         :param configfile: Path to config file. Leave empty to look in default places
         :type: str
-        :param network: Bitcoin mainnet or testnet. Default is bitcoin mainnet
+        :param network: Wia mainnet or testnet. Default is wia mainnet
         :type: str
 
-        :return BitcoindClient:
+        :return WiadClient:
         """
         try:
             config = configparser.ConfigParser(strict=False)
         except TypeError:
             config = configparser.ConfigParser()
-        config_fn = 'bitcoin.conf'
+        config_fn = 'wia.conf'
         if isinstance(network, Network):
             network = network.name
         if network == 'testnet':
-            config_fn = 'bitcoin-testnet.conf'
+            config_fn = 'wia-testnet.conf'
 
         cfn = None
         if not configfile:
-            config_locations = ['~/.bitcoinlib', '~/.bitcoin', '~/Application Data/Bitcoin',
-                                '~/Library/Application Support/Bitcoin']
+            config_locations = ['~/.wialib', '~/.wia', '~/Application Data/Wia',
+                                '~/Library/Application Support/Wia']
             for location in config_locations:
                 cfn = Path(location, config_fn).expanduser()
                 if cfn.exists():
                     break
         else:
-            cfn = Path(BCL_DATA_DIR, 'config', configfile)
+            cfn = Path(WIL_DATA_DIR, 'config', configfile)
         if not cfn or not cfn.is_file():
-            raise ConfigError("Config file %s not found. Please install bitcoin client and specify a path to config "
-                              "file if path is not default. Or place a config file in .bitcoinlib/bitcoin.conf to "
+            raise ConfigError("Config file %s not found. Please install wia client and specify a path to config "
+                              "file if path is not default. Or place a config file in .wialib/wia.conf to "
                               "reference to an external server." % cfn)
 
         try:
