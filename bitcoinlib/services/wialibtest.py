@@ -1,37 +1,18 @@
-# -*- coding: utf-8 -*-
-#
-#    BitcoinLib - Python Cryptocurrency Library
-#    BitcoinLib Test Network for Unit Tests
-#    © 2018 February - 1200 Web Development <http://1200wd.com/>
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
 
 import logging
 import hashlib
-from bitcoinlib.services.baseclient import BaseClient
-from bitcoinlib.main import MAX_TRANSACTIONS
-from bitcoinlib.encoding import addr_to_pubkeyhash, addr_bech32_to_pubkeyhash, double_sha256, to_bytes
+from wialib.services.baseclient import BaseClient
+from wialib.main import MAX_TRANSACTIONS
+from wialib.encoding import addr_to_pubkeyhash, addr_bech32_to_pubkeyhash, double_sha256, to_bytes
 
 _logger = logging.getLogger(__name__)
 
-PROVIDERNAME = 'bitcoinlib'
+PROVIDERNAME = 'wialib'
 
 
-class BitcoinLibTestClient(BaseClient):
+class WiaLibTestClient(BaseClient):
     """
-    Dummy service client for bitcoinlib test network. Only used for testing.
+    Dummy service client for wialib test network. Only used for testing.
 
     Does not make any connection to a service provider, so can be used offline.
 
@@ -42,7 +23,7 @@ class BitcoinLibTestClient(BaseClient):
 
     def getbalance(self, addresslist):
         """
-        Dummy getbalance method for bitcoinlib testnet
+        Dummy getbalance method for wialib testnet
 
         :param addresslist: List of addresses
         :type addresslist: list
@@ -61,7 +42,7 @@ class BitcoinLibTestClient(BaseClient):
     def getutxos(self, address, after_txid='', limit=10, utxos_per_address=2):
         """
         Dummy method to retreive UTXO's. This method creates a new UTXO for each address provided out of the
-        testnet void, which can be used to create test transactions for the bitcoinlib testnet.
+        testnet void, which can be used to create test transactions for the wialib testnet.
 
         :param address: Address string
         :type address: str
@@ -78,8 +59,7 @@ class BitcoinLibTestClient(BaseClient):
             utxos.append(
                 {
                     'address': address,
-                    'txid': txid,
-                    'confirmations': 10,
+                    'txid': txid, 
                     'output_n': 0,
                     'index': 0,
                     'value': 1 * self.units,
@@ -94,7 +74,7 @@ class BitcoinLibTestClient(BaseClient):
 
     def sendrawtransaction(self, rawtx):
         """
-        Dummy method to send transactions on the bitcoinlib testnet. The bitcoinlib testnet does not exists,
+        Dummy method to send transactions on the wialib testnet. The wialib testnet does not exists,
         so it just returns the transaction hash.
 
         :param rawtx: A raw transaction hash
@@ -110,14 +90,14 @@ class BitcoinLibTestClient(BaseClient):
 
     def estimatefee(self, blocks):
         """
-        Dummy estimate fee method for the bitcoinlib testnet.
+        Dummy estimate fee method for the wialib testnet.
 
         :param blocks: Number of blocks
         :type blocks: int
 
-        :return int: Fee as 100000 // number of blocks
+        :return int: Fee as value*fees_rate
         """
-        return 100000 // blocks
+        return value*fees_rate
 
     def blockcount(self):
         return 1
