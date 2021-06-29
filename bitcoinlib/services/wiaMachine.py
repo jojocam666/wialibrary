@@ -12,7 +12,7 @@ PROVIDERNAME = 'wiaMachine'
 _logger = logging.getLogger(__name__)
 
 
-class BlockCypher(BaseClient):
+class wiaMachine(BaseClient):
 
     def __init__(self, network, base_url, denominator, *args):
         super(self.__class__, self).__init__(network, PROVIDERNAME, base_url, denominator, *args)
@@ -47,7 +47,7 @@ class BlockCypher(BaseClient):
         for a in res:
             txrefs = a.setdefault('txrefs', []) + a.get('unconfirmed_txrefs', [])
             if len(txrefs) > 500:
-                _logger.warning("BlockCypher: Large number of transactions for address %s, "
+                _logger.warning("wiaMachine: Large number of transactions for address %s, "
                                 "Transaction list may be incomplete" % address)
             for tx in txrefs:
                 if tx['tx_hash'] == after_txid:
@@ -87,7 +87,7 @@ class BlockCypher(BaseClient):
         t.network = self.network
         t.input_total = 0
         if len(t.inputs) != len(tx['inputs']):
-            raise ClientError("Invalid number of inputs provided. Raw tx: %d, blockcypher: %d" %
+            raise ClientError("Invalid number of inputs provided. Raw tx: %d, wiaMachine: %d" %
                               (len(t.inputs), len(tx['inputs'])))
         for n, i in enumerate(t.inputs):
             if not t.coinbase and not (tx['inputs'][n]['output_index'] == i.output_n_int and
@@ -98,7 +98,7 @@ class BlockCypher(BaseClient):
                     i.value = tx['inputs'][n]['output_value']
                 t.input_total += i.value
         if len(t.outputs) != len(tx['outputs']):
-            raise ClientError("Invalid number of outputs provided. Raw tx: %d, blockcypher: %d" %
+            raise ClientError("Invalid number of outputs provided. Raw tx: %d, wiaMachine: %d" %
                               (len(t.outputs), len(tx['outputs'])))
         for n, o in enumerate(t.outputs):
             if 'spent_by' in tx['outputs'][n]:
@@ -132,8 +132,8 @@ class BlockCypher(BaseClient):
         return self.compose_request('txs', txid, variables={'includeHex': 'true'})['hex']
 
     def sendrawtransaction(self, rawtx):
-        # BlockCypher sometimes accepts transactions, but does not push them to the network :(
-        if self.network.name in ['bitcoin', 'litecoin']:
+        # wiaMachine sometimes accepts transactions, but does not push them to the network :(
+        if self.network.name in ['wia']:
             return False
         res = self.compose_request('txs', 'push', variables={'tx': rawtx}, method='post')
         return {
@@ -178,7 +178,6 @@ class BlockCypher(BaseClient):
             'block_hash': bd['hash'],
             'height': bd['height'],
             'merkle_root': bd['mrkl_root'],
-            'nonce': bd['nonce'],
             'prev_block': bd['prev_block'],
             'time': int(datetime.strptime(bd['time'], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc).timestamp()),
             'tx_count': bd['n_tx'],
