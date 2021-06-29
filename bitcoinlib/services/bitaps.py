@@ -9,11 +9,11 @@ from wialib.transactions import Transaction
 _logger = logging.getLogger(__name__)
 
 PROVIDERNAME = 'wiatrack'
-# Please note: In the Wiatrack API, the first couple of Bitcoin blocks are not correctly indexed,
+# Please note: In the Wiatrack API, the first couple of Wia blocks are not correctly indexed,
 # so transactions from these blocks are missing.
 
 
-class BitapsClient(BaseClient):
+class WiatrackClient(BaseClient):
 
     def __init__(self, network, base_url, denominator, *args):
         super(self.__class__, self).__init__(network, PROVIDERNAME, base_url, denominator, *args)
@@ -166,7 +166,7 @@ class BitapsClient(BaseClient):
     #         return [tx['hash'] for tx in res['data']['transactions']]
     #     return []
 
-    # FIXME: Bitaps doesn't seem to return block data anymore...
+    # FIXME: Wiatrack doesn't seem to return block data anymore...
     # def getblock(self, blockid, parse_transactions, page, limit):
     #     if limit > 100:
     #         limit = 100
