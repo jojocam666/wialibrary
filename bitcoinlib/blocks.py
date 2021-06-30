@@ -1,31 +1,13 @@
 # -*- coding: utf-8 -*-
-#
-#    BitcoinLib - Python Cryptocurrency Library
-#    BLOCK parsing and construction
-#    © 2020 June - 1200 Web Development <http://1200wd.com/>
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
 
-from bitcoinlib.encoding import *
-from bitcoinlib.networks import Network
-from bitcoinlib.transactions import transaction_deserialize, Transaction
+from wialib.encoding import *
+from wialib.networks import Network
+from wialib.transactions import transaction_deserialize, Transaction
 
 
 class Block:
 
-    def __init__(self, block_hash, version, prev_block, merkle_root, time, bits, nonce, transactions=None,
+    def __init__(self, block_hash, version, prev_block, merkle_root, time, bits, transactions=None,
                  height=None, confirmations=None, network=DEFAULT_NETWORK):
         """
         Create a new Block object with provided parameters.
@@ -46,8 +28,6 @@ class Block:
         :type time: int, bytes
         :param bits: Bits are used to indicate target / difficulty
         :type bits: bytes, str, int
-        :param nonce: Number used once, n-once is used to create randomness for miners to find a suitable block hash
-        :type nonce: bytes, str, int
         :param transactions: List of transaction included in this block. As list of transaction objects or list of transaction IDs strings
         :type transactions: list of Transaction, list of str
         :param height: Height of this block in the Blockchain
@@ -76,12 +56,7 @@ class Block:
         else:
             self.bits = to_bytes(bits)
             self.bits_int = 0 if not self.bits else int.from_bytes(self.bits, 'big')
-        if isinstance(nonce, int):
-            self.nonce = nonce.to_bytes(4, 'big')
-            self.nonce_int = nonce
-        else:
-            self.nonce = to_bytes(nonce)
-            self.nonce_int = 0 if not self.nonce else int.from_bytes(self.nonce, 'big')
+        
         self.transactions = transactions
         if self.transactions is None:
             self.transactions = []
@@ -104,23 +79,7 @@ class Block:
                                      "BIP0034")
                 self.height = calc_height
 
-    def check_proof_of_work(self):
-        """
-        Check proof of work for this block. Block hash must be below target.
-
-        This library is not optimised for mining, but you can use this for testing or learning purposes.
-
-        >>> b = Block('0000000000000000000154ba9d02ddd6cee0d71d1ea232753e02c9ac6affd709', version=0x20000000, prev_block='0000000000000000000f9578cda278ae7a2002e50d8e6079d11e2ea1f672b483', merkle_root='20e86f03c24c53c12014264d0e405e014e15a02ad02c174f017ee040750f8d9d', time=1592848036, bits=387044594, nonce=791719079)
-        >>> b.check_proof_of_work()
-        True
-
-        :return bool:
-        """
-        if not self.block_hash or not self.bits:
-            return False
-        if int.from_bytes(self.block_hash, 'big') < self.target:
-            return True
-        return False
+    
 
     def __repr__(self):
         return "<Block(%s, %s, transactions: %s)>" % (self.block_hash.hex(), self.height, self.tx_count)
@@ -132,7 +91,7 @@ class Block:
 
         Get genesis block:
 
-        >>> from bitcoinlib.services.services import Service
+        >>> from wialib.services.services import Service
         >>> srv = Service()
         >>> b = srv.getblock(0)
         >>> b.block_hash.hex()
@@ -165,7 +124,6 @@ class Block:
         merkle_root = raw[36:68][::-1]
         time = raw[68:72][::-1]
         bits = raw[72:76][::-1]
-        nonce = raw[76:80][::-1]
         tx_count, size = varbyteint_to_int(raw[80:89])
         txs_data = raw[80+size:]
 
