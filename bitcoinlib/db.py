@@ -1,22 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-#    BitcoinLib - Python Cryptocurrency Library
+
 #    DataBase - SqlAlchemy database definitions
-#    © 2016 - 2020 October - 1200 Web Development <http://1200wd.com/>
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+
 
 from sqlalchemy import create_engine
 from sqlalchemy import (Column, Integer, BigInteger, UniqueConstraint, CheckConstraint, String, Boolean, Sequence,
@@ -25,7 +11,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import sessionmaker, relationship, close_all_sessions
 from urllib.parse import urlparse
-from bitcoinlib.main import *
+from wialib.main import *
 
 _logger = logging.getLogger(__name__)
 Base = declarative_base()
@@ -40,7 +26,7 @@ def compile_largebinary_mysql(type_, compiler, **kwargs):
 
 class Db:
     """
-    Bitcoinlib Database object used by Service() and HDWallet() class. Initialize database and open session when
+    Wialib Database object used by Service() and HDWallet() class. Initialize database and open session when
     creating database object.
 
     Create new database if is doesn't exist yet
@@ -79,14 +65,14 @@ class Db:
         # Just a very simple database update script, without any external libraries for now
         #
         version_db = self.session.query(DbConfig.value).filter_by(variable='version').scalar()
-        if version_db[:3] == '0.4' and BITCOINLIB_VERSION[:3] == '0.5':
+        if version_db[:3] == '0.4' and WIALIB_VERSION[:3] == '0.5':
             raise ValueError("Old database version found (<0.4.19). Cannot to 0.5 version database automatically, "
                              "use db_update tool to update")
         try:
-            if BITCOINLIB_VERSION != version_db:
-                _logger.warning("BitcoinLib database (%s) is from different version then library code (%s). "
-                                "Let's try to update database." % (version_db, BITCOINLIB_VERSION))
-                db_update(self, version_db, BITCOINLIB_VERSION)
+            if WIALIB_VERSION != version_db:
+                _logger.warning("WiaLib database (%s) is from different version then library code (%s). "
+                                "Let's try to update database." % (version_db, WIALIB_VERSION))
+                db_update(self, version_db, WIALIB_VERSION)
 
         except Exception as e:
             _logger.warning("Error when verifying version or updating database: %s" % e)
@@ -103,7 +89,7 @@ class Db:
         session = ses()
         installation_date = session.query(DbConfig.value).filter_by(variable='installation_date').scalar()
         if not installation_date:
-            session.merge(DbConfig(variable='version', value=BITCOINLIB_VERSION))
+            session.merge(DbConfig(variable='version', value=WIALIB_VERSION))
             session.merge(DbConfig(variable='installation_date', value=str(datetime.now())))
             url = ''
             try:
@@ -131,7 +117,7 @@ def add_column(engine, table_name, column):
 
 class DbConfig(Base):
     """
-    BitcoinLib configuration variables
+    WiaLib configuration variables
 
     """
     __tablename__ = 'config'
@@ -150,7 +136,7 @@ class DbWallet(Base):
     id = Column(Integer, Sequence('wallet_id_seq'), primary_key=True, doc="Unique wallet ID")
     name = Column(String(80), unique=True, doc="Unique wallet name")
     owner = Column(String(50), doc="Wallet owner")
-    network_name = Column(String(20), ForeignKey('networks.name'), doc="Name of network, i.e.: bitcoin, litecoin")
+    network_name = Column(String(20), ForeignKey('networks.name'), doc="Name of network, i.e.: wia")
     network = relationship("DbNetwork", doc="Link to DbNetwork object")
     purpose = Column(Integer,
                      doc="Wallet purpose ID. BIP-44 purpose field, indicating which key-scheme is used default is 44")
