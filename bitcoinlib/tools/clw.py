@@ -1,21 +1,14 @@
 # -*- coding: utf-8 -*-
-#
-#    BitcoinLib - Python Cryptocurrency Library
-#
-#    CLW - Command Line Wallet manager.
-#    Create and manage BitcoinLib legacy/segwit single and multisignatures wallets from the commandline
-#
-#    © 2019 November - 1200 Web Development <http://1200wd.com/>
-#
+
 
 import sys
 import argparse
 import ast
 from pprint import pprint
-from bitcoinlib.wallets import Wallet, wallets_list, wallet_exists, wallet_delete, WalletError, wallet_empty
-from bitcoinlib.mnemonic import Mnemonic
-from bitcoinlib.keys import HDKey
-from bitcoinlib.main import BITCOINLIB_VERSION
+from wialib.wallets import Wallet, wallets_list, wallet_exists, wallet_delete, WalletError, wallet_empty
+from wialib.mnemonic import Mnemonic
+from wialib.keys import HDKey
+from wialib.main import WIALIB_VERSION
 
 try:
     import pyqrcode
@@ -24,11 +17,11 @@ except ImportError:
     QRCODES_AVAILABLE = False
 
 
-DEFAULT_NETWORK = 'bitcoin'
+DEFAULT_NETWORK = 'wia'
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='BitcoinLib command line wallet')
+    parser = argparse.ArgumentParser(description='WiaLib command line wallet')
     parser.add_argument('wallet_name', nargs='?', default='',
                         help="Name of wallet to create or open. Used to store your all your wallet keys "
                              "and will be printed on each paper wallet")
@@ -37,7 +30,7 @@ def parse_args():
     group_wallet.add_argument('--wallet-remove', action='store_true',
                               help="Name or ID of wallet to remove, all keys and transactions will be deleted")
     group_wallet.add_argument('--list-wallets', '-l', action='store_true',
-                              help="List all known wallets in BitcoinLib database")
+                              help="List all known wallets in WiaLib database")
     group_wallet.add_argument('--wallet-info', '-w', action='store_true',
                               help="Show wallet information")
     group_wallet.add_argument('--update-utxos', '-x', action='store_true',
@@ -66,7 +59,7 @@ def parse_args():
                                help="Number of bits for passphrase key. Default is 128, lower is not adviced but can "
                                     "be used for testing. Set to 256 bits for more future proof passphrases")
     group_wallet2.add_argument('--network', '-n',
-                               help="Specify 'bitcoin', 'litecoin', 'testnet' or other supported network")
+                               help="Specify 'wia', 'testnet' or other supported network")
     group_wallet2.add_argument('--database', '-d',
                                help="URI of the database to use",)
     group_wallet2.add_argument('--create-from-key', '-c', metavar='KEY',
@@ -113,7 +106,7 @@ def parse_args():
     return pa
 
 
-def get_passphrase(args):
+def get_passphrase_english(args):
     inp_passphrase = Mnemonic('english').generate(args.passphrase_strength)
     print("\nYour mnemonic private key sentence is: %s" % inp_passphrase)
     print("\nPlease write down on paper and backup. With this key you can restore your wallet and all keys")
@@ -122,6 +115,7 @@ def get_passphrase(args):
     if inp not in ['yes', 'Yes', 'YES']:
         clw_exit("Exiting...")
     return passphrase
+
 
 
 def create_wallet(wallet_name, args, db_uri):
@@ -214,14 +208,14 @@ def clw_exit(msg=None):
 
 
 def main():
-    print("Command Line Wallet - BitcoinLib %s\n" % BITCOINLIB_VERSION)
+    print("Command Line Wallet - WiaLib %s\n" % WIALIB_VERSION)
     # --- Parse commandline arguments ---
     args = parse_args()
 
     db_uri = args.database
 
     if args.generate_key:
-        passphrase = get_passphrase(args)
+        passphrase = get_passphrase_english(args) 
         passphrase = ' '.join(passphrase)
         seed = Mnemonic().to_seed(passphrase).hex()
         hdkey = HDKey.from_seed(seed, network=args.network)
@@ -233,7 +227,7 @@ def main():
 
     # List wallets, then exit
     if args.list_wallets:
-        print("BitcoinLib wallets:")
+        print("WiaLib wallets:")
         for w in wallets_list(db_uri=db_uri):
             if 'parent_id' in w and w['parent_id']:
                 continue
