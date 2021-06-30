@@ -250,7 +250,7 @@ class Block:
         This method returns a list of BIP version number as string.
 
         Example: This block uses the BIP9 versioning system and signals BIP141 (segwit)
-        >>> from bitcoinlib.services.services import Service
+        >>> from wialib.services.services import Service
         >>> srv = Service()
         >>> b = srv.getblock(450001)
         >>> print(b.version_bips())
