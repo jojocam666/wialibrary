@@ -1,22 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-#    BitcoinLib - Python Cryptocurrency Library
+
 #    Cache DataBase - SqlAlchemy database definitions for caching
-#    © 2020 February - 1200 Web Development <http://1200wd.com/>
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+
 
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, BigInteger, String, Boolean, ForeignKey, DateTime, Enum, LargeBinary
@@ -34,7 +20,7 @@ from sqlalchemy.orm import sessionmaker, relationship, close_all_sessions
 #     # compat.register()
 #     pass  # Only necessary when mysql or postgres is used
 from urllib.parse import urlparse
-from bitcoinlib.main import *
+from wialib.main import *
 
 
 _logger = logging.getLogger(__name__)
@@ -187,8 +173,6 @@ class DbCacheBlock(Base):
     prev_block = Column(LargeBinary(32), doc="Block hash of previous block")
     merkle_root = Column(LargeBinary(32), doc="Merkle root used to validate transaction in block")
     time = Column(BigInteger, doc="Timestamp to indicated when block was created")
-    bits = Column(BigInteger, doc="Encoding for proof-of-work, used to determine target and difficulty")
-    nonce = Column(BigInteger, doc="Nonce (number used only once or n-once) is used to create different block hashes")
     tx_count = Column(Integer, doc="Number of transactions included in this block")
 
 
