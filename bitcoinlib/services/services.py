@@ -418,7 +418,7 @@ class Service(object):
         :param blocks: Expection confirmation time in blocks. Default is 3.
         :type blocks: int
 
-        :return int: Fee in smallest network denominator (satoshi)
+        :return int: Fee in smallest network denominator (lio)
         """
         self.results_cache_n = 0
         if self.min_providers <= 1:  # Disable cache if comparing providers
