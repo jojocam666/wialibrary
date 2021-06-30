@@ -1,14 +1,8 @@
 # -*- coding: utf-8 -*-
-#
-#    BitcoinLib - Python Cryptocurrency Library
-#
-#    Multisig 3-of-5 wallet with Mnemonic passphrase keys
-#
-#    © 2017 November - 1200 Web Development <http://1200wd.com/>
-#
 
-from bitcoinlib.mnemonic import Mnemonic
-from bitcoinlib.keys import HDKey
+
+from wialib.mnemonic import Mnemonic
+from wialib.keys import HDKey
 
 NETWORK = 'testnet'
 KEY_STRENGHT = 128
