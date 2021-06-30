@@ -595,7 +595,7 @@ class Service(object):
 
     def getinfo(self):
         """
-        Returns info about current network. Such as difficulty, latest block, mempool size and network hashrate.
+        Returns info about current network. Such as money_mass, latest block, mempool size and network hashrate.
 
         :return dict:
         """
