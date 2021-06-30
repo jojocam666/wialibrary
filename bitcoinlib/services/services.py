@@ -1119,14 +1119,14 @@ class Cache(object):
         if not (block.height and block.block_hash and block.prev_block and block.merkle_root and
                 block.bits and block.version) \
                 and not block.block_hash == b'\x00\x00\x00\x00\x00\x19\xd6h\x9c\x08Z\xe1e\x83\x1e\x93O\xf7c\xaeF' \
-                                            b'\xa2\xa6\xc1r\xb3\xf1\xb6\n\x8c\xe2o':  # Bitcoin genesis block
+                                            b'\xa2\xa6\xc1r\xb3\xf1\xb6\n\x8c\xe2o':  # Wia genesis block
             _logger.info("Caching failure block: incomplete data")
             return
 
         new_block = DbCacheBlock(
             block_hash=block.block_hash, height=block.height, network_name=self.network.name,
             version=block.version_int, prev_block=block.prev_block, bits=block.bits_int,
-            merkle_root=block.merkle_root, nonce=block.nonce_int, time=block.time, tx_count=block.tx_count)
+            merkle_root=block.merkle_root, time=block.time, tx_count=block.tx_count)
         self.session.merge(new_block)
         try:
             self.commit()
