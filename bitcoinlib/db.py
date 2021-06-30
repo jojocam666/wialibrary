@@ -420,14 +420,14 @@ class DbTransactionOutput(Base):
 
 
 def db_update_version_id(db, version):
-    _logger.info("Updated BitcoinLib database to version %s" % version)
+    _logger.info("Updated WiaLib database to version %s" % version)
     db.session.query(DbConfig).filter(DbConfig.variable == 'version').update(
         {DbConfig.value: version})
     db.session.commit()
     return version
 
 
-def db_update(db, version_db, code_version=BITCOINLIB_VERSION):
+def db_update(db, version_db, code_version=WIALIB_VERSION):
     # Database changes from version 0.5+
     #
     # Older databases cannnot be updated this way, use updatedb.py to copy keys and recreate database.
