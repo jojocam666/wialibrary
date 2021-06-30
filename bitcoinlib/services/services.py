@@ -477,7 +477,7 @@ class Service(object):
         If you only use a local wcoin or wiad provider, make sure you set the limit to maximum (i.e. 9999)
         because all transactions are already downloaded when fetching the block.
 
-        >>> from bitcoinlib.services.services import Service
+        >>> from wialib.services.services import Service
         >>> srv = Service()
         >>> b = srv.getblock(0)
         >>> b
@@ -533,7 +533,7 @@ class Service(object):
         Get raw block as hexadecimal string for block with specified hash or block height.
 
         Not many providers offer this option, and it can be slow, so it is advised to use a local client such
-        as bitcoind.
+        as wiad.
 
         :param blockid: Block hash or block height
         :type blockid: str, int
@@ -546,7 +546,7 @@ class Service(object):
         """
         Get list of all transaction IDs in the current mempool
 
-        A full list of transactions ID's will only be returned if a bcoin or bitcoind client is available. Otherwise
+        A full list of transactions ID's will only be returned if a wcoin or wiad client is available. Otherwise
         specify the txid option to verify if a transaction is added to the mempool.
 
         :param txid: Check if transaction with this hash exists in memory pool
