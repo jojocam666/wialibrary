@@ -277,7 +277,7 @@ class Service(object):
 
     def gettransaction(self, txid):
         """
-        Get a transaction by its transaction hashtxos. Convert to Bitcoinlib transaction object.
+        Get a transaction by its transaction hashtxos. Convert to Wialib transaction object.
 
         :param txid: Transaction identification hash
         :type txid: str
