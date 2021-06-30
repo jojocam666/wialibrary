@@ -388,7 +388,7 @@ def main():
         clw_exit()
 
     # print("Updating wallet")
-    if args.network == 'bitcoinlib_test':
+    if args.network == 'wialib_test':
         wlt.utxos_update()
     print("Wallet info for %s" % wlt.name)
     wlt.info()
