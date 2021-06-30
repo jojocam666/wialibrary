@@ -1,22 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-#    BitcoinLib - Python Cryptocurrency Library
+
 #    ENCODING - Methods for encoding and conversion
-#    © 2016 - 2020 October - 1200 Web Development <http://1200wd.com/>
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
 
 import math
 import numbers
@@ -24,7 +9,7 @@ from copy import deepcopy
 import hashlib
 import pyaes
 import unicodedata
-from bitcoinlib.main import *
+from wialib.main import *
 _logger = logging.getLogger(__name__)
 
 
@@ -303,7 +288,6 @@ def varbyteint_to_int(byteint):
     """
     Convert CompactSize Variable length integer in byte format to integer.
 
-    See https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer for specification
 
     >>> varbyteint_to_int(bytes.fromhex('fd1027'))
     (10000, 3)
@@ -330,8 +314,6 @@ def varbyteint_to_int(byteint):
 def int_to_varbyteint(inp):
     """
     Convert integer to CompactSize Variable length integer in byte format.
-
-    See https://en.bitcoin.it/wiki/Protocol_documentation#Variable_length_integer for specification
 
     >>> int_to_varbyteint(10000).hex()
     'fd1027'
