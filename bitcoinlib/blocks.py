@@ -146,7 +146,7 @@ class Block:
             raise ValueError("Number of found transactions %d is not equal to expected number %d" %
                              (len(transactions), tx_count))
 
-        block = cls(block_hash, version, prev_block, merkle_root, time, bits, nonce, transactions, height,
+        block = cls(block_hash, version, prev_block, merkle_root, time, bits, transactions, height,
                     network=network)
         block.txs_data = txs_data
         block.tx_count = tx_count
@@ -182,57 +182,12 @@ class Block:
             'merkle_root': self.merkle_root.hex(),
             'timestamp': self.time,
             'bits': self.bits_int,
-            'nonce': self.nonce_int,
-            'target': self.target_hex,
-            'difficulty': self.difficulty,
             'tx_count': self.tx_count,
             'transactions': self.transactions,
             'confirmations': self.confirmations
         }
 
-    @property
-    def target(self):
-        """
-        Block target calculated from block's bits. Block hash must be below this target. Used to calculate
-        block difficulty.
-
-        :return int:
-        """
-        if not self.bits:
-            return 0
-        exponent = self.bits[0]
-        coefficient = int.from_bytes(b'\x00' + self.bits[1:], 'big')
-        return coefficient * 256 ** (exponent - 3)
-
-    @property
-    def target_hex(self):
-        """
-        Block target in hexadecimal string of 64 characters.
-
-        :return str:
-        """
-        if not self.bits:
-            return ''
-        return hex(int(self.target))[2:].zfill(64)
-
-    @property
-    def difficulty(self):
-        """
-        Block difficulty calculated from bits / target. Human readable representation of block's target.
-
-        Genesis block has difficulty of 1.0
-
-        >>> from bitcoinlib.services.services import Service
-        >>> srv = Service()
-        >>> b = srv.getblock(0)
-        >>> b.difficulty
-        1.0
-
-        :return float:
-        """
-        if not self.bits:
-            return 0
-        return 0xffff * 256 ** (0x1d - 3) / self.target
+   
 
     def serialize(self):
         """
@@ -244,7 +199,7 @@ class Block:
         * merkle root - 32 bytes
         * timestamp - 4 bytes
         * bits - 4 bytes
-        * nonce - 4 bytes
+        
 
         Followed by a list of raw serialized transactions.
 
@@ -262,7 +217,7 @@ class Block:
         rb += self.nonce[::-1]
         if len(rb) != 80:
             raise ValueError("Missing or incorrect length of 1 of the block header variables: version, prev_block, "
-                             "merkle_root, time, bits or nonce.")
+                             "merkle_root, time or bits .")
         rb += int_to_varbyteint(len(self.transactions))
         for t in self.transactions:
             rb += t.raw()
@@ -274,7 +229,7 @@ class Block:
         Get the block version as binary string. Since BIP9 protocol changes are signaled by changing one of the 29
         last bits of the version number.
 
-        >>> from bitcoinlib.services.services import Service
+        >>> from wialib.services.services import Service
         >>> srv = Service()
         >>> b = srv.getblock(450001)
         >>> print(b.version_bin)
