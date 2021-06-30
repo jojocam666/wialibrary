@@ -1,22 +1,12 @@
 # -*- coding: utf-8 -*-
-#
-#    BitcoinLib - Python Cryptocurrency Library
-#
-#    Create a multisig 2-of-3 wallet with Mnemonic passphrase keys, so wallet contains 3 keys and 2 signatures are
-#    needed to sign a transaction / send a payment.
-#
-#    Transaction are created and signed with 1 signature on the online PC, on the other offline PC the transaction is
-#    signed with a second private key. The third key is a stored on a paper in case one of the others keys is lost.
-#
-#    © 2017 - 2019 December - 1200 Web Development <http://1200wd.com/>
-#
+
 
 from __future__ import print_function
 
 from pprint import pprint
-from bitcoinlib.wallets import wallet_exists, Wallet
-from bitcoinlib.mnemonic import Mnemonic
-from bitcoinlib.keys import HDKey
+from wialib.wallets import wallet_exists, Wallet
+from wialib.mnemonic import Mnemonic
+from wialib.keys import HDKey
 
 WALLET_NAME = "Multisig-2of3"
 NETWORK = 'testnet'
@@ -24,7 +14,7 @@ KEY_STRENGTH = 128  # Remove this line to use the default 256 bit key strength
 SIGNATURES_REQUIRED = 2
 WITNESS_TYPE = 'segwit'  # Witness type can be legacy, p2sh-segwit or segwit
 
-# from bitcoinlib.wallets import wallet_delete_if_exists
+# from wialib.wallets import wallet_delete_if_exists
 # wallet_delete_if_exists(WALLET_NAME, force=True)
 
 if not wallet_exists(WALLET_NAME):
@@ -78,8 +68,8 @@ if not wallet_exists(WALLET_NAME):
     offline_wallet.info()
 
     print("\n---> Please create a wallet on your Online PC like this:")
-    print("from bitcoinlib.wallets import Wallet")
-    print("from bitcoinlib.keys import HDKey")
+    print("from wialib.wallets import Wallet")
+    print("from wialib.keys import HDKey")
     print("")
     print("key_list = [")
     for key in key_lists['Online PC']:
@@ -93,19 +83,19 @@ if not wallet_exists(WALLET_NAME):
     print("wlt.get_key()")
     print("wlt.info()")
 else:
-    from bitcoinlib.config.config import BITCOINLIB_VERSION, BCL_DATABASE_DIR
-    online_wallet = Wallet(WALLET_NAME, db_uri=BCL_DATABASE_DIR + '/bitcoinlib.tmp.sqlite')
+    from wialib.config.config import WIALIBLIB_VERSION, WIL_DATABASE_DIR
+    online_wallet = Wallet(WALLET_NAME, db_uri=WIL_DATABASE_DIR + '/wialib.tmp.sqlite')
     online_wallet.utxos_update()
     online_wallet.info()
     utxos = online_wallet.utxos()
     if utxos:
         print("\nNew unspent outputs found!")
-        print("Now a new transaction will be created to sweep this wallet and send bitcoins to a testnet faucet")
+        print("Now a new transaction will be created to sweep this wallet and send wias to a testnet faucet")
         send_to_address = 'n2eMqTT929pb1RDNuqEnxdaLau1rxy3efi'
         t = online_wallet.sweep(send_to_address, min_confirms=0)
         print(t.raw_hex())
         print("Now copy-and-paste the raw transaction hex to your Offline PC and sign it there with a second signature:")
-        print("\nfrom bitcoinlib.wallets import Wallet")
+        print("\nfrom wialib.wallets import Wallet")
         print("")
         print("wlt = Wallet('%s')" % WALLET_NAME)
         print("utxos = ", end='')
