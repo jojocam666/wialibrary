@@ -474,7 +474,7 @@ class Service(object):
         you can specify a page and limit for the transaction. For instance with page=2, limit=4 only transaction
         5 to 8 are returned in the Blocks's 'transaction' attribute.
 
-        If you only use a local bcoin or bitcoind provider, make sure you set the limit to maximum (i.e. 9999)
+        If you only use a local wcoin or wiad provider, make sure you set the limit to maximum (i.e. 9999)
         because all transactions are already downloaded when fetching the block.
 
         >>> from bitcoinlib.services.services import Service
@@ -495,7 +495,7 @@ class Service(object):
         :return Block:
         """
         if not limit:
-            limit = 10 if parse_transactions else 99999
+            limit = 10 if parse_transactions else 9999
 
         block = self.cache.getblock(blockid)
         is_last_page = False
@@ -512,7 +512,7 @@ class Service(object):
             if not bd or isinstance(bd, bool):
                 return False
             block = Block(bd['block_hash'], bd['version'], bd['prev_block'], bd['merkle_root'], bd['time'], bd['bits'],
-                          bd['nonce'], bd['txs'], bd['height'], bd['depth'], self.network)
+                           bd['txs'], bd['height'], bd['depth'], self.network)
             block.tx_count = bd['tx_count']
             block.limit = limit
             block.page = page
