@@ -106,7 +106,7 @@ def get_key_format(key, is_private=None):
     :return dict: Dictionary with format, network and is_private
     """
     if not key:
-        raise BKeyError("Key empty, please specify a valid key")
+        raise WKeyError("Key empty, please specify a valid key")
     key_format = ""
     networks = None
     script_types = []
@@ -116,7 +116,7 @@ def get_key_format(key, is_private=None):
     # if isinstance(key, bytes) and len(key) in [128, 130]:
     #     key = to_hexstring(key)
     if not (is_private is None or isinstance(is_private, bool)):
-        raise BKeyError("Attribute 'is_private' must be False or True")
+        raise WKeyError("Attribute 'is_private' must be False or True")
     elif isinstance(key, numbers.Number):
         key_format = 'decimal'
         is_private = True
@@ -171,7 +171,7 @@ def get_key_format(key, is_private=None):
                 if prefix_data:
                     networks = list(set([n['network'] for n in prefix_data]))
                     if is_private is None and len(set([n['is_private'] for n in prefix_data])) > 1:
-                        raise BKeyError("Cannot determine if key is private or public, please specify is_private "
+                        raise WKeyError("Cannot determine if key is private or public, please specify is_private "
                                         "attribute")
                     is_private = prefix_data[0]['is_private']
                     script_types = list(set([n['script_type'] for n in prefix_data]))
@@ -200,7 +200,7 @@ def get_key_format(key, is_private=None):
         except (EncodingError, TypeError):
             pass
     if not key_format:
-        raise BKeyError("Unrecognised key format")
+        raise WKeyError("Unrecognised key format")
     else:
         return {
             "format": key_format,
@@ -223,13 +223,13 @@ def deserialize_address(address, encoding=None, network=None):
     If more networks and or script types are found you can find these in the 'networks' field.
 
     >>> deserialize_address('1Khyc5eUddbhYZ8bEZi9wiN8TrmQ8uND4j')
-    {'address': '1Khyc5eUddbhYZ8bEZi9wiN8TrmQ8uND4j', 'encoding': 'base58', 'public_key_hash': 'cd322766c02e7c37c3e3f9b825cd41ffbdcd17d7', 'public_key_hash_bytes': b"\\xcd2'f\\xc0.|7\\xc3\\xe3\\xf9\\xb8%\\xcdA\\xff\\xbd\\xcd\\x17\\xd7", 'prefix': b'\\x00', 'network': 'bitcoin', 'script_type': 'p2pkh', 'witness_type': 'legacy', 'networks': ['bitcoin']}
+    {'address': '1Khyc5eUddbhYZ8bEZi9wiN8TrmQ8uND4j', 'encoding': 'base58', 'public_key_hash': 'cd322766c02e7c37c3e3f9b825cd41ffbdcd17d7', 'public_key_hash_bytes': b"\\xcd2'f\\xc0.|7\\xc3\\xe3\\xf9\\xb8%\\xcdA\\xff\\xbd\\xcd\\x17\\xd7", 'prefix': b'\\x00', 'network': 'wia', 'script_type': 'p2pkh', 'witness_type': 'legacy', 'networks': ['wia']}
 
     :param address: A base58 or bech32 encoded address
     :type address: str
     :param encoding: Encoding scheme used for address encoding. Attempts to guess encoding if not specified.
     :type encoding: str
-    :param network: Specify network filter, i.e.: bitcoin, testnet, litecoin, etc. Wil trigger check if address is valid for this network
+    :param network: Specify network filter, i.e.: wia, testnet,  etc. Wil trigger check if address is valid for this network
     :type network: str
 
     :return dict: with information about this address
@@ -245,7 +245,7 @@ def deserialize_address(address, encoding=None, network=None):
             key_hash = address_bytes[:-4]
             checksum = double_sha256(key_hash)[0:4]
             if check != checksum and encoding == 'base58':
-                raise BKeyError("Invalid address %s, checksum incorrect" % address)
+                raise WKeyError("Invalid address %s, checksum incorrect" % address)
             elif check == checksum:
                 address_prefix = key_hash[0:1]
                 networks_p2pkh = network_by_value('prefix_address', address_prefix.hex())
@@ -263,7 +263,7 @@ def deserialize_address(address, encoding=None, network=None):
                     networks = networks_p2sh
                 if network:
                     if network not in networks:
-                        raise BKeyError("Network %s not found in extracted networks: %s" % (network, networks))
+                        raise WKeyError("Network %s not found in extracted networks: %s" % (network, networks))
                 elif len(networks) >= 1:
                     network = networks[0]
                 return {
