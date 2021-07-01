@@ -1,32 +1,15 @@
 # -*- coding: utf-8 -*-
 #
-#    BitcoinLib - Python Cryptocurrency Library
-#    Public key cryptography and Hierarchical Deterministic Key Management
-#    © 2016 - 2021 March - 1200 Web Development <http://1200wd.com/>
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
 
 import hmac
 import random
 import collections
 import json
 
-from bitcoinlib.networks import Network, network_by_value, wif_prefix_search
-from bitcoinlib.config.secp256k1 import *
-from bitcoinlib.encoding import *
-from bitcoinlib.mnemonic import Mnemonic
+from wialib.networks import Network, network_by_value, wif_prefix_search
+from wialib.config.secp256k1 import *
+from wialib.encoding import *
+from wialib.mnemonic import Mnemonic
 
 rfc6979_warning_given = False
 if USE_FASTECDSA:
@@ -44,7 +27,7 @@ else:
 _logger = logging.getLogger(__name__)
 
 
-class BKeyError(Exception):
+class WKeyError(Exception):
     """
     Handle Key class Exceptions
 
@@ -64,17 +47,17 @@ def check_network_and_key(key, network=None, kf_networks=None, default_network=D
     default network will be returned.
 
     >>> check_network_and_key('L4dTuJf2ceEdWDvCPsLhYf8GiiuYqXtqfbcKdC21BPDvEM1ykJRC')
-    'bitcoin'
+    'wia'
     
-    A BKeyError will be raised if key does not correspond with network or if multiple network are found.
+    A WKeyError will be raised if key does not correspond with network or if multiple network are found.
     
     :param key: Key in any format recognized by get_key_format function
     :type key: str, int, bytes
-    :param network: Optional network. Method raises BKeyError if keys belongs to another network
+    :param network: Optional network. Method raises WKeyError if keys belongs to another network
     :type network: str
     :param kf_networks: Optional list of networks which is returned by get_key_format. If left empty the get_key_format function will be called.
     :type kf_networks: list
-    :param default_network: Specify different default network, leave empty for default (bitcoin)
+    :param default_network: Specify different default network, leave empty for default (wia)
     :type default_network: str
     
     :return str: Network name
@@ -85,7 +68,7 @@ def check_network_and_key(key, network=None, kf_networks=None, default_network=D
             kf_networks = kf['networks']
     if kf_networks:
         if network is not None and network not in kf_networks:
-            raise BKeyError("Specified key %s is from different network then specified: %s" % (kf_networks, network))
+            raise WKeyError("Specified key %s is from different network then specified: %s" % (kf_networks, network))
         elif network is None and len(kf_networks) == 1:
             return kf_networks[0]
         elif network is None and len(kf_networks) > 1:
@@ -93,7 +76,7 @@ def check_network_and_key(key, network=None, kf_networks=None, default_network=D
                 return default_network
             elif 'testnet' in kf_networks:
                 return 'testnet'
-            raise BKeyError("Could not determine network of specified key, multiple networks found: %s" % kf_networks)
+            raise WKeyError("Could not determine network of specified key, multiple networks found: %s" % kf_networks)
     if network is None:
         return default_network
     else:
@@ -107,13 +90,13 @@ def get_key_format(key, is_private=None):
     This method does not validate if a key is valid.
 
     >>> get_key_format('L4dTuJf2ceEdWDvCPsLhYf8GiiuYqXtqfbcKdC21BPDvEM1ykJRC')
-    {'format': 'wif_compressed', 'networks': ['bitcoin'], 'is_private': True, 'script_types': [], 'witness_types': ['legacy'], 'multisig': [False]}
+    {'format': 'wif_compressed', 'networks': ['wia'], 'is_private': True, 'script_types': [], 'witness_types': ['legacy'], 'multisig': [False]}
 
     >>> get_key_format('becc7ac3b383cd609bd644aa5f102a811bac49b6a34bbd8afe706e32a9ac5c5e')
     {'format': 'hex', 'networks': None, 'is_private': True, 'script_types': [], 'witness_types': ['legacy'], 'multisig': [False]}
 
     >>> get_key_format('Zpub6vZyhw1ShkEwNxtqfjk7jiwoEbZYMJdbWLHvEwo6Ns2fFc9rdQn3SerYFQXYxtZYbA8a1d83shW3g4WbsnVsymy2L8m7wpeApiuPxug3ARu')
-    {'format': 'hdkey_public', 'networks': ['bitcoin'], 'is_private': False, 'script_types': ['p2wsh'], 'witness_types': ['segwit'], 'multisig': [True]}
+    {'format': 'hdkey_public', 'networks': ['wia'], 'is_private': False, 'script_types': ['p2wsh'], 'witness_types': ['segwit'], 'multisig': [True]}
 
     :param key: Any private or public key
     :type key: str, int, bytes
