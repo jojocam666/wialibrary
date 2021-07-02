@@ -1046,7 +1046,7 @@ class Output(object):
         public key, public key hash or a locking script. Only one needs to be provided as the they all can be derived 
         from each other, but you can provide as much attributes as you know to improve speed.
         
-        :param value: Amount of output in smallest denominator integers (Satoshi's) or as Value object or string
+        :param value: Amount of output in smallest denominator integers (Lio's) or as Value object or string
         :type value: int, Value, str
         :param address: Destination address of output. Leave empty to derive from other attributes you provide. An instance of an Address or HDKey class is allowed as argument.
         :type address: str, Address, HDKey
@@ -1251,11 +1251,11 @@ class Transaction(object):
         if not filename and not txid:
             raise TransactionError("Please supply filename or txid")
         elif not filename and txid:
-            p = Path(BCL_DATA_DIR, '%s.tx' % txid)
+            p = Path(WIL_DATA_DIR, '%s.tx' % txid)
         else:
             p = Path(filename)
             if not p.parent or str(p.parent) == '.':
-                p = Path(BCL_DATA_DIR, filename)
+                p = Path(WIL_DATA_DIR, filename)
         f = p.open('rb')
         t = pickle.load(f)
         f.close()
