@@ -1077,10 +1077,10 @@ class Wallet(object):
         Use a masterkey WIF when creating a wallet:
 
         >>> wif = 'xprv9s21ZrQH143K3cxbMVswDTYgAc9CeXABQjCD9zmXCpXw4MxN93LanEARbBmV3utHZS9Db4FX1C1RbC5KSNAjQ5WNJ1dDBJ34PjfiSgRvS8x'
-        >>> if wallet_delete_if_exists('bitcoinlib_legacy_wallet_test', force=True): pass
-        >>> w = Wallet.create('bitcoinlib_legacy_wallet_test', wif)
+        >>> if wallet_delete_if_exists('wialib_legacy_wallet_test', force=True): pass
+        >>> w = Wallet.create('wialib_legacy_wallet_test', wif)
         >>> w
-        <Wallet(name=bitcoinlib_legacy_wallet_test, db_uri="None")>
+        <Wallet(name=wialib_legacy_wallet_test, db_uri="None")>
         >>> # Add some test utxo data:
         >>> if w.utxo_add('16QaHuFkfuebXGcYHmehRXBBX7RG9NbtLg', 100000000, '748799c9047321cb27a6320a827f1f69d767fe889c14bf11f27549638d566fe4', 0): pass
 
@@ -1173,7 +1173,7 @@ class Wallet(object):
                 else:
                     try:
                         key = HDKey(key, password=password, network=network)
-                    except BKeyError:
+                    except WKeyError:
                         try:
                             scheme = 'single'
                             key = Address.import_address(key, encoding=encoding, network=network)
@@ -2141,10 +2141,10 @@ class Wallet(object):
         """
         Search for keys in database. Include 0 or more of account_id, name, key_id, change and depth.
 
-        >>> w = Wallet('bitcoinlib_legacy_wallet_test')
+        >>> w = Wallet('wialib_legacy_wallet_test')
         >>> all_wallet_keys = w.keys()
         >>> w.keys(depth=0) # doctest:+ELLIPSIS
-        [<DbKey(id=..., name='bitcoinlib_legacy_wallet_test', wif='xprv9s21ZrQH143K3cxbMVswDTYgAc9CeXABQjCD9zmXCpXw4MxN93LanEARbBmV3utHZS9Db4FX1C1RbC5KSNAjQ5WNJ1dDBJ34PjfiSgRvS8x'>]
+        [<DbKey(id=..., name='wialib_legacy_wallet_test', wif='xprv9s21ZrQH143K3cxbMVswDTYgAc9CeXABQjCD9zmXCpXw4MxN93LanEARbBmV3utHZS9Db4FX1C1RbC5KSNAjQ5WNJ1dDBJ34PjfiSgRvS8x'>]
 
         Returns a list of DbKey object or dictionary object if as_dict is True
 
@@ -2225,7 +2225,7 @@ class Wallet(object):
         """
         Get keys of defined networks for this wallet. Wrapper for the :func:`keys` method
 
-        >>> w = Wallet('bitcoinlib_legacy_wallet_test')
+        >>> w = Wallet('wialib_legacy_wallet_test')
         >>> network_key = w.keys_networks()
         >>> # Address index of hardened key 0' is 2147483648
         >>> network_key[0].address_index
@@ -2256,7 +2256,7 @@ class Wallet(object):
         """
         Get Database records of account key(s) with for current wallet. Wrapper for the :func:`keys` method.
 
-        >>> w = Wallet('bitcoinlib_legacy_wallet_test')
+        >>> w = Wallet('wialib_legacy_wallet_test')
         >>> account_key = w.keys_accounts()
         >>> account_key[0].path
         "m/44'/0'/0'"
@@ -2280,7 +2280,7 @@ class Wallet(object):
         """
         Get address keys of specified account_id for current wallet. Wrapper for the :func:`keys` methods.
 
-        >>> w = Wallet('bitcoinlib_legacy_wallet_test')
+        >>> w = Wallet('wialib_legacy_wallet_test')
         >>> w.keys_addresses()[0].address
         '16QaHuFkfuebXGcYHmehRXBBX7RG9NbtLg'
 
@@ -2349,7 +2349,7 @@ class Wallet(object):
 
         Use :func:`keys_addresses` method to receive full key objects
 
-        >>> w = Wallet('bitcoinlib_legacy_wallet_test')
+        >>> w = Wallet('wialib_legacy_wallet_test')
         >>> w.addresslist()[0]
         '16QaHuFkfuebXGcYHmehRXBBX7RG9NbtLg'
 
@@ -2382,7 +2382,7 @@ class Wallet(object):
         """
         Return single key with given ID or name as WalletKey object
 
-        >>> w = Wallet('bitcoinlib_legacy_wallet_test')
+        >>> w = Wallet('wialib_legacy_wallet_test')
         >>> w.key('change 0').address
         '1HabJXe8mTwXiMzUWW5KdpYbFWu3hvtsbF'
 
@@ -2412,7 +2412,7 @@ class Wallet(object):
                 self._key_objects.update({dbkey.id: hdwltkey})
                 return hdwltkey
         else:
-            raise BKeyError("Key '%s' not found" % term)
+            raise WKeyError("Key '%s' not found" % term)
 
     def account(self, account_id):
         """
@@ -2496,9 +2496,9 @@ class Wallet(object):
         Wrapper for :func:`networks` method, returns a flat list with currently used
         networks for this wallet.
 
-        >>> w = Wallet('bitcoinlib_legacy_wallet_test')
+        >>> w = Wallet('wialib_legacy_wallet_test')
         >>> w.network_list()
-        ['bitcoin']
+        ['wia']
 
         :return list of str:
         """
@@ -2561,7 +2561,7 @@ class Wallet(object):
         if len(b_res):
             balance = b_res[0]
         if as_string:
-            return Value.from_satoshi(balance, network=network).str_unit()
+            return Value.from_lio(balance, network=network).str_unit()
         else:
             return float(balance)
 
@@ -2838,9 +2838,9 @@ class Wallet(object):
         """
         Get UTXO's (Unspent Outputs) from database. Use :func:`utxos_update` method first for updated values
 
-        >>> w = Wallet('bitcoinlib_legacy_wallet_test')
+        >>> w = Wallet('wialib_legacy_wallet_test')
         >>> w.utxos()  # doctest:+SKIP
-        [{'value': 100000000, 'script': '', 'output_n': 0, 'transaction_id': ..., 'spent': False, 'script_type': 'p2pkh', 'key_id': ..., 'address': '16QaHuFkfuebXGcYHmehRXBBX7RG9NbtLg', 'confirmations': 0, 'txid': '748799c9047321cb27a6320a827f1f69d767fe889c14bf11f27549638d566fe4', 'network_name': 'bitcoin'}]
+        [{'value': 100000000, 'script': '', 'output_n': 0, 'transaction_id': ..., 'spent': False, 'script_type': 'p2pkh', 'key_id': ..., 'address': '16QaHuFkfuebXGcYHmehRXBBX7RG9NbtLg', 'confirmations': 0, 'txid': '748799c9047321cb27a6320a827f1f69d767fe889c14bf11f27549638d566fe4', 'network_name': 'wia'}]
 
         :param account_id: Account ID
         :type account_id: int
@@ -2923,7 +2923,7 @@ class Wallet(object):
         """
         Get transaction ID for latest utxo in database for given address
 
-        >>> w = Wallet('bitcoinlib_legacy_wallet_test')
+        >>> w = Wallet('wialib_legacy_wallet_test')
         >>> w.utxo_last('16QaHuFkfuebXGcYHmehRXBBX7RG9NbtLg')
         '748799c9047321cb27a6320a827f1f69d767fe889c14bf11f27549638d566fe4'
 
@@ -3097,9 +3097,9 @@ class Wallet(object):
         The transaction only includes the inputs and outputs related to this wallet. To get full transactions
         use the :func:`transactions_full` method.
 
-        >>> w = Wallet('bitcoinlib_legacy_wallet_test')
+        >>> w = Wallet('wialib_legacy_wallet_test')
         >>> w.transactions()
-        [<WalletTransaction(input_count=0, output_count=1, status=confirmed, network=bitcoin)>]
+        [<WalletTransaction(input_count=0, output_count=1, status=confirmed, network=wia)>]
 
         :param account_id: Filter by Account ID. Leave empty for default account_id
         :type account_id: int, None
@@ -3288,7 +3288,7 @@ class Wallet(object):
         Select available unspent transaction outputs (UTXO's) which can be used as inputs for a transaction for
         the specified amount.
 
-        >>> w = Wallet('bitcoinlib_legacy_wallet_test')
+        >>> w = Wallet('wialib_legacy_wallet_test')
         >>> w.select_inputs(50000000)
         [<Input(prev_txid='748799c9047321cb27a6320a827f1f69d767fe889c14bf11f27549638d566fe4', output_n=0, address='16QaHuFkfuebXGcYHmehRXBBX7RG9NbtLg', index_n=0, type='sig_pubkey')>]
 
@@ -3393,10 +3393,10 @@ class Wallet(object):
 
         Output array is a list of 1 or more addresses and amounts.
 
-        >>> w = Wallet('bitcoinlib_legacy_wallet_test')
+        >>> w = Wallet('wialib_legacy_wallet_test')
         >>> t = w.transaction_create([('1J9GDZMKEr3ZTj8q6pwtMy4Arvt92FDBTb', 200000)])
         >>> t
-        <WalletTransaction(input_count=1, output_count=2, status=new, network=bitcoin)>
+        <WalletTransaction(input_count=1, output_count=2, status=new, network=wia)>
         >>> t.outputs # doctest:+ELLIPSIS
         [<Output(value=..., address=..., type=p2pkh)>, <Output(value=..., address=..., type=p2pkh)>]
 
@@ -3766,10 +3766,10 @@ class Wallet(object):
 
         Uses the :func:`transaction_create` method to create a new transaction, and uses a random service client to send the transaction.
 
-        >>> w = Wallet('bitcoinlib_legacy_wallet_test')
+        >>> w = Wallet('wialib_legacy_wallet_test')
         >>> t = w.send([('1J9GDZMKEr3ZTj8q6pwtMy4Arvt92FDBTb', 200000)], offline=True)
         >>> t
-        <WalletTransaction(input_count=1, output_count=2, status=new, network=bitcoin)>
+        <WalletTransaction(input_count=1, output_count=2, status=new, network=wia)>
         >>> t.outputs # doctest:+ELLIPSIS
         [<Output(value=..., address=..., type=p2pkh)>, <Output(value=..., address=..., type=p2pkh)>]
 
@@ -3833,16 +3833,16 @@ class Wallet(object):
 
         Wrapper for wallet :func:`send` method.
 
-        >>> w = Wallet('bitcoinlib_legacy_wallet_test')
+        >>> w = Wallet('wialib_legacy_wallet_test')
         >>> t = w.send_to('1J9GDZMKEr3ZTj8q6pwtMy4Arvt92FDBTb', 200000, offline=True)
         >>> t
-        <WalletTransaction(input_count=1, output_count=2, status=new, network=bitcoin)>
+        <WalletTransaction(input_count=1, output_count=2, status=new, network=wia)>
         >>> t.outputs # doctest:+ELLIPSIS
         [<Output(value=..., address=..., type=p2pkh)>, <Output(value=..., address=..., type=p2pkh)>]
 
         :param to_address: Single output address as string Address object, HDKey object or WalletKey object
         :type to_address: str, Address, HDKey, WalletKey
-        :param amount: Output is smallest denominator for this network (ie: Satoshi's for Bitcoin), as Value object or value string as accepted by Value class
+        :param amount: Output is smallest denominator for this network (ie: Lio for Wia), as Value object or value string as accepted by Value class
         :type amount: int, str, Value
         :param input_key_id: Limit UTXO's search for inputs to this key ID or list of key IDs. Only valid if no input array is specified
         :type input_key_id: int, list
@@ -3878,10 +3878,10 @@ class Wallet(object):
 
         Wrapper for the :func:`send` method.
 
-        >>> w = Wallet('bitcoinlib_legacy_wallet_test')
+        >>> w = Wallet('wialib_legacy_wallet_test')
         >>> t = w.sweep('1J9GDZMKEr3ZTj8q6pwtMy4Arvt92FDBTb', offline=True)
         >>> t
-        <WalletTransaction(input_count=1, output_count=1, status=new, network=bitcoin)>
+        <WalletTransaction(input_count=1, output_count=1, status=new, network=wia)>
         >>> t.outputs # doctest:+ELLIPSIS
         [<Output(value=..., address=1J9GDZMKEr3ZTj8q6pwtMy4Arvt92FDBTb, type=p2pkh)>]
 
@@ -3889,7 +3889,7 @@ class Wallet(object):
 
         >>> to_list = [('1J9GDZMKEr3ZTj8q6pwtMy4Arvt92FDBTb', 100000), (w.get_key(), 0)]
         >>> w.sweep(to_list, offline=True)
-        <WalletTransaction(input_count=1, output_count=2, status=new, network=bitcoin)>
+        <WalletTransaction(input_count=1, output_count=2, status=new, network=wia)>
 
         :param to_address: Single output address or list of outputs in format [(<adddress>, <amount>)]. If you specify a list of outputs, use amount value = 0 to indicate a change output
         :type to_address: str, list
@@ -3905,7 +3905,7 @@ class Wallet(object):
         :type min_confirms: int
         :param fee_per_kb: Fee per kilobyte transaction size, leave empty to get estimated fee costs from Service provider. This option is ignored when the 'fee' option is specified
         :type fee_per_kb: int
-        :param fee: Total transaction fee in smallest denominator (i.e. satoshis). Leave empty to get estimated fee from service providers.
+        :param fee: Total transaction fee in smallest denominator (i.e. lio). Leave empty to get estimated fee from service providers.
         :type fee: int
         :param locktime: Transaction level locktime. Locks the transaction until a specified block (value from 1 to 5 million) or until a certain time (Timestamp in seconds after 1-jan-1970). Default value is 0 for transactions without locktime
         :type locktime: int
@@ -3988,7 +3988,7 @@ class Wallet(object):
 
         Returns private key information if available and as_private is True is specified
 
-        >>> w = Wallet('bitcoinlib_legacy_wallet_test')
+        >>> w = Wallet('wialib_legacy_wallet_test')
         >>> w.public_master().wif
         'xpub6D2qEr8Z8WYKKns2xZYyyvvRviPh1NKt1kfHwwfiTxJwj7peReEJt3iXoWWsr8tXWTsejDjMfAezM53KVFVkSZzA5i2pNy3otprtYUvh4u1'
 
@@ -4023,7 +4023,7 @@ class Wallet(object):
 
         Specify transaction ID or filename.
 
-        :param txid: Transaction ID. Transaction object will be read from .bitcoinlib datadir
+        :param txid: Transaction ID. Transaction object will be read from .wialib datadir
         :type txid: str
         :param filename: Name of transaction object file
         :type filename: str
@@ -4033,11 +4033,11 @@ class Wallet(object):
         if not filename and not txid:
             raise WalletError("Please supply filename or txid")
         elif not filename and txid:
-            p = Path(BCL_DATA_DIR, '%s.tx' % txid)
+            p = Path(WIL_DATA_DIR, '%s.tx' % txid)
         else:
             p = Path(filename)
             if not p.parent or str(p.parent) == '.':
-                p = Path(BCL_DATA_DIR, filename)
+                p = Path(WIL_DATA_DIR, filename)
         f = p.open('rb')
         t = pickle.load(f)
         f.close()
@@ -4102,7 +4102,7 @@ class Wallet(object):
                     for key in self.keys(depth=d, network=nw.name, is_active=is_active):
                         print("%5s %-28s %-45s %-25s %25s" %
                               (key.id, key.path, key.address, key.name,
-                               Value.from_satoshi(key.balance, network=nw).str_unit(currency_repr='symbol')))
+                               Value.from_lio(key.balance, network=nw).str_unit(currency_repr='symbol')))
 
                 if detail > 2:
                     include_new = False
@@ -4126,13 +4126,13 @@ class Wallet(object):
                             if tx['status'] not in ['confirmed', 'unconfirmed']:
                                 status = tx['status']
                             print("%64s %43s %8d %21s %s %s" % (tx['txid'], address, tx['confirmations'],
-                                                                Value.from_satoshi(tx['value'], network=nw).str_unit(
+                                                                Value.from_lio(tx['value'], network=nw).str_unit(
                                                                     currency_repr='symbol'),
                                                                 spent, status))
         print("\n= Balance Totals (includes unconfirmed) =")
         for na_balance in balances:
             print("%-20s %-20s %20s" % (na_balance['network'], "(Account %s)" % na_balance['account_id'],
-                                        Value.from_satoshi(na_balance['balance'], network=na_balance['network']).
+                                        Value.from_lio(na_balance['balance'], network=na_balance['network']).
                                         str_unit(currency_repr='symbol')))
         print("\n")
 
