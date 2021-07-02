@@ -2080,7 +2080,7 @@ class Signature(object):
             self.public_key = public_key
 
         if not self.txid or not self.public_key:
-            raise BKeyError("Please provide txid and public_key to verify signature")
+            raise WKeyError("Please provide txid and public_key to verify signature")
 
         if USE_FASTECDSA:
             return _ecdsa.verify(
@@ -2167,7 +2167,7 @@ def verify(txid, signature, public_key=None):
     """
     if not isinstance(signature, Signature):
         if not public_key:
-            raise BKeyError("No public key provided, cannot verify")
+            raise WKeyError("No public key provided, cannot verify")
         signature = Signature.from_str(signature, public_key=public_key)
     return signature.verify(txid, public_key)
 
@@ -2192,7 +2192,7 @@ def ec_point(m):
 
 def mod_sqrt(a):
     """
-    Compute the square root of 'a' using the secp256k1 'bitcoin' curve
+    Compute the square root of 'a' using the 'secp256k1 __bitcoin__' curve
 
     Used to calculate y-coordinate if only x-coordinate from public key point is known.
     Formula: y ** 2 == x ** 3 + 7
