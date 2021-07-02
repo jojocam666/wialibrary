@@ -1,32 +1,16 @@
 # -*- coding: utf-8 -*-
-#
-#    BitcoinLib - Python Cryptocurrency Library
 #    TRANSACTION class to create, verify and sign Transactions
-#    © 2017 - 2021 March - 1200 Web Development <http://1200wd.com/>
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+
 
 from datetime import datetime
 import json
 import pickle
 import random
-from bitcoinlib.encoding import *
-from bitcoinlib.config.opcodes import *
-from bitcoinlib.keys import HDKey, Key, deserialize_address, Address, sign, verify, Signature
-from bitcoinlib.networks import Network
-from bitcoinlib.values import Value, value_to_satoshi
+from wialib.encoding import *
+from wialib.config.opcodes import *
+from wialib.keys import HDKey, Key, deserialize_address, Address, sign, verify, Signature
+from wialib.networks import Network
+from wialib.values import Value, value_to_lio
 
 _logger = logging.getLogger(__name__)
 
@@ -54,7 +38,7 @@ def transaction_deserialize(rawtx, network=DEFAULT_NETWORK, check_size=True):
     
     :param rawtx: Raw transaction as hexadecimal string or bytes
     :type rawtx: str, bytes
-    :param network: Network code, i.e. 'bitcoin', 'testnet', 'litecoin', etc. Leave emtpy for default network
+    :param network: Network code, i.e. 'wia', 'testnet', 'bitcoin', etc. Leave emtpy for default network
     :type network: str, Network
     :param check_size: Check if not bytes are left when parsing is finished. Disable when parsing list of transactions, such as the transactions in a raw block. Default is True
     :type check_size: bool
