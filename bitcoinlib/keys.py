@@ -376,10 +376,10 @@ def path_expand(path, path_template=None, level_offset=None, account_id=0, cosig
             purpose = ks[0]['purpose']
             path_template = ks[0]['key_path']
     if not isinstance(path, list):
-        raise BKeyError("Please provide path as list with at least 1 item. Wallet key path format is %s" %
+        raise WKeyError("Please provide path as list with at least 1 item. Wallet key path format is %s" %
                         path_template)
     if len(path) > len(path_template):
-        raise BKeyError("Invalid path provided. Path should be shorter than %d items. "
+        raise WKeyError("Invalid path provided. Path should be shorter than %d items. "
                         "Wallet key path format is %s" % (len(path_template), path_template))
 
     # If path doesn't start with m/M complement path
@@ -426,12 +426,12 @@ def path_expand(path, path_template=None, level_offset=None, account_id=0, cosig
             hardened = True
         new_varname = (str(var_defaults[varname]) if varname in var_defaults else varname)
         if new_varname == varname and not new_varname.isdigit():
-            raise BKeyError("Variable %s not found in Key structure definitions in main.py" % varname)
+            raise WKeyError("Variable %s not found in Key structure definitions in main.py" % varname)
         if varname == 'address_index' and address_index is None:
-            raise BKeyError("Please provide value for 'address_index' or 'path'")
+            raise WKeyError("Please provide value for 'address_index' or 'path'")
         npath[i] = new_varname + ("'" if hardened else '')
     if "None'" in npath or "None" in npath:
-        raise BKeyError("Could not parse all variables in path %s" % npath)
+        raise WKeyError("Could not parse all variables in path %s" % npath)
     return npath
 
 
@@ -449,7 +449,7 @@ class Address(object):
 
         >>> addr = Address.import_address('bc1qyftqrh3hm2yapnhh0ukaht83d02a7pda8l5uhkxk9ftzqsmyu7pst6rke3')
         >>> addr.as_dict()
-        {'network': 'bitcoin', '_data': None, 'script_type': 'p2wsh', 'encoding': 'bech32', 'compressed': None, 'witness_type': 'segwit', 'depth': None, 'change': None, 'address_index': None, 'prefix': 'bc', 'redeemscript': '', '_hashed_data': None, 'address': 'bc1qyftqrh3hm2yapnhh0ukaht83d02a7pda8l5uhkxk9ftzqsmyu7pst6rke3', 'address_orig': 'bc1qyftqrh3hm2yapnhh0ukaht83d02a7pda8l5uhkxk9ftzqsmyu7pst6rke3'}
+        {'network': 'wia', '_data': None, 'script_type': 'p2wsh', 'encoding': 'bech32', 'compressed': None, 'witness_type': 'segwit', 'depth': None, 'change': None, 'address_index': None, 'prefix': 'bc', 'redeemscript': '', '_hashed_data': None, 'address': 'bc1qyftqrh3hm2yapnhh0ukaht83d02a7pda8l5uhkxk9ftzqsmyu7pst6rke3', 'address_orig': 'bc1qyftqrh3hm2yapnhh0ukaht83d02a7pda8l5uhkxk9ftzqsmyu7pst6rke3'}
 
         :param address: Address to import
         :type address: str
@@ -463,7 +463,7 @@ class Address(object):
         :type change: int
         :param address_index: Index of address. Used in BIP32 key paths
         :type address_index: int
-        :param network: Specify network filter, i.e.: bitcoin, testnet, litecoin, etc. Wil trigger check if address is valid for this network
+        :param network: Specify network filter, i.e.: wia, testnet, etc. Wil trigger check if address is valid for this network
         :type network: str
         :param network_overrides: Override network settings for specific prefixes, i.e.: {"prefix_address_p2sh": "32"}. Used by settings in providers.json
         :type network_overrides: dict
@@ -522,7 +522,7 @@ class Address(object):
         """
         self.network = network
         if not (data or hashed_data):
-            raise BKeyError("Please specify data (public key or script) or hashed_data argument")
+            raise WKeyError("Please specify data (public key or script) or hashed_data argument")
         if not isinstance(network, Network):
             self.network = Network(network)
         self.data_bytes = to_bytes(data)
@@ -576,7 +576,7 @@ class Address(object):
             if self.prefix is None:
                 self.prefix = self.network.prefix_bech32
         else:
-            raise BKeyError("Encoding %s not supported" % self.encoding)
+            raise WKeyError("Encoding %s not supported" % self.encoding)
         self.address = pubkeyhash_to_addr(self.hash_bytes, prefix=self.prefix, encoding=self.encoding)
         self.address_orig = None
         provider_prefix = None
@@ -668,7 +668,7 @@ class Key(object):
 
         :param import_key: If specified import given private or public key. If not specified a new private key is generated.
         :type import_key: str, int, bytes
-        :param network: Bitcoin, testnet, litecoin or other network
+        :param network: wia, testnet or other network
         :type network: str, Network
         :param compressed: Is key compressed or not, default is True
         :type compressed: bool
@@ -703,7 +703,7 @@ class Key(object):
         else:
             kf = get_key_format(import_key)
             if kf['format'] == 'address':
-                raise BKeyError("Can not create Key object from address")
+                raise WKeyError("Can not create Key object from address")
             self.key_format = kf["format"]
             networks_extracted = kf["networks"]
             self.is_private = is_private
@@ -711,7 +711,7 @@ class Key(object):
                 if kf['is_private']:
                     self.is_private = True
                 elif kf['is_private'] is None:
-                    raise BKeyError("Could not determine if key is private or public")
+                    raise WKeyError("Could not determine if key is private or public")
                 else:
                     self.is_private = False
         network_name = None
