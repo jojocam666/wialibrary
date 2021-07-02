@@ -1,38 +1,23 @@
 # -*- coding: utf-8 -*-
 #
-#    BitcoinLib - Python Cryptocurrency Library
+#    
 #    MAIN - Load configs, initialize logging and database
-#    © 2017 - 2020 February - 1200 Web Development <http://1200wd.com/>
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-
+#   
 # Do not remove any of the imports below, used by other files
 import os
 import sys
 import functools
 import logging
 from logging.handlers import RotatingFileHandler
-from bitcoinlib.config.config import *
+from wialib.config.config import *
 
 
 # Initialize logging
-logger = logging.getLogger('bitcoinlib')
+logger = logging.getLogger('wialib')
 logger.setLevel(LOGLEVEL)
 
-if ENABLE_BITCOINLIB_LOGGING:
-    handler = RotatingFileHandler(str(BCL_LOG_FILE), maxBytes=100 * 1024 * 1024, backupCount=2)
+if ENABLE_WIALIB_LOGGING:
+    handler = RotatingFileHandler(str(WIL_LOG_FILE), maxBytes=100 * 1024 * 1024, backupCount=2)
     formatter = logging.Formatter('%(asctime)s %(levelname)s %(funcName)s(%(lineno)d) %(message)s',
                                   datefmt='%Y/%m/%d %H:%M:%S')
     handler.setFormatter(formatter)
@@ -40,14 +25,14 @@ if ENABLE_BITCOINLIB_LOGGING:
     logger.addHandler(handler)
 
     _logger = logging.getLogger(__name__)
-    logger.info('WELCOME TO BITCOINLIB - CRYPTOCURRENCY LIBRARY')
-    logger.info('Version: %s' % BITCOINLIB_VERSION)
+    logger.info('WELCOME TO WIALIB - CRYPTOCURRENCY LIBRARY')
+    logger.info('Version: %s' % WIALIB_VERSION)
     logger.info('Logger name: %s' % logging.__name__)
-    logger.info('Read config from: %s' % BCL_CONFIG_FILE)
-    logger.info('Directory databases: %s' % BCL_DATABASE_DIR)
+    logger.info('Read config from: %s' % WIL_CONFIG_FILE)
+    logger.info('Directory databases: %s' % WIL_DATABASE_DIR)
     logger.info('Default database: %s' % DEFAULT_DATABASE)
-    logger.info('Logging to: %s' % BCL_LOG_FILE)
-    logger.info('Directory for data files: %s' % BCL_DATA_DIR)
+    logger.info('Logging to: %s' % WIL_LOG_FILE)
+    logger.info('Directory for data files: %s' % WIL_DATA_DIR)
 
 
 def script_type_default(witness_type=None, multisig=False, locking_script=False):
