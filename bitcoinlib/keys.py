@@ -789,15 +789,15 @@ class Key(object):
                 checksum = key[-4:]
                 key = key[:-4]
                 if checksum != double_sha256(key)[:4]:
-                    raise BKeyError("Invalid checksum, not a valid WIF key")
+                    raise WKeyError("Invalid checksum, not a valid WIF key")
                 found_networks = network_by_value('prefix_wif', key[0:1].hex())
                 if not len(found_networks):
-                    raise BKeyError("Unrecognised WIF private key, version byte unknown. Versionbyte: %s" % key[0:1])
+                    raise WKeyError("Unrecognised WIF private key, version byte unknown. Versionbyte: %s" % key[0:1])
                 self._wif = import_key
                 self._wif_prefix = key[0:1]
                 # if self.network.name not in found_networks:
                 #     if len(found_networks) > 1:
-                #         raise BKeyError("More then one network found with this versionbyte, please specify network. "
+                #         raise WKeyError("More then one network found with this versionbyte, please specify network. "
                 #                         "Networks found: %s" % found_networks)
                 #     else:
                 #         _logger.warning("Current network %s is different then the one found in key: %s" %
@@ -811,19 +811,19 @@ class Key(object):
                 key_byte = key[1:]
                 key_hex = key_byte.hex()
             else:
-                raise BKeyError("Unknown key format %s" % self.key_format)
+                raise WKeyError("Unknown key format %s" % self.key_format)
 
             if not (key_byte or key_hex):
-                raise BKeyError("Cannot format key in hex or byte format")
+                raise WKeyError("Cannot format key in hex or byte format")
             self.private_hex = key_hex
             self.private_byte = key_byte
             self.secret = int(key_hex, 16)
         else:
-            raise BKeyError("Cannot import key. Public key format unknown")
+            raise WKeyError("Cannot import key. Public key format unknown")
 
         if self.is_private and not (self.public_byte or self.public_hex):
             if not self.is_private:
-                raise BKeyError("Private key has no known secret number")
+                raise WKeyError("Private key has no known secret number")
             p = ec_point(self.secret)
             if USE_FASTECDSA:
                 self._x = p.x
@@ -945,7 +945,7 @@ class Key(object):
         if isinstance(addr, str):
             addr = addr.encode('utf-8')
         if double_sha256(addr)[0:4] != addresshash:
-            raise BKeyError('Addresshash verification failed! Password or '
+            raise WKeyError('Addresshash verification failed! Password or '
                             'specified network %s might be incorrect' % network)
         return priv, compressed
 
@@ -978,7 +978,7 @@ class Key(object):
         :return str: Base58Check encoded Private Key WIF
         """
         if not self.secret:
-            raise BKeyError("WIF format not supported for public key")
+            raise WKeyError("WIF format not supported for public key")
         if prefix is None:
             versionbyte = self.network.prefix_wif
         else:
@@ -1072,7 +1072,7 @@ class Key(object):
             else:
                 encoding = 'base58'
         if not self.compressed and encoding == 'bech32':
-            raise BKeyError("Uncompressed keys are non-standard for segwit/bech32 encoded addresses")
+            raise WKeyError("Uncompressed keys are non-standard for segwit/bech32 encoded addresses")
         if self._address_obj and script_type is None:
             script_type = self._address_obj.script_type
         if not(self._address_obj and self._address_obj.prefix == prefix and self._address_obj.encoding == encoding):
@@ -1158,12 +1158,12 @@ class HDKey(Key):
         :return HDKey:
         """
         seed = to_bytes(import_seed)
-        i = hmac.new(b"Bitcoin seed", seed, hashlib.sha512).digest()
+        i = hmac.new(b"Wia seed", seed, hashlib.sha512).digest()
         key = i[:32]
         chain = i[32:]
         key_int = int.from_bytes(key, 'big')
         if key_int >= secp256k1_n:
-            raise BKeyError("Key int value cannot be greater than secp256k1_n")
+            raise WKeyError("Key int value cannot be greater than secp256k1_n")
         return HDKey(key=key, chain=chain, network=network, key_type=key_type, compressed=compressed,
                      encoding=encoding, witness_type=witness_type, multisig=multisig)
 
@@ -1208,7 +1208,7 @@ class HDKey(Key):
         >>> private_hex = '221ff330268a9bb5549a02c801764cffbc79d5c26f4041b26293a425fd5b557c'
         >>> k = HDKey(private_hex)
         >>> k
-        <HDKey(public_hex=0363c152144dcd5253c1216b733fdc6eb8a94ab2cd5caa8ead5e59ab456ff99927, wif_public=xpub661MyMwAqRbcEYS8w7XLSVeEsBXy79zSzH1J8vCdxAZningWLdN3zgtU6SmypHzZG2cYrwpGkWJqRxS6EAW77gd7CHFoXNpBd3LN8xjAyCW, network=bitcoin)>
+        <HDKey(public_hex=0363c152144dcd5253c1216b733fdc6eb8a94ab2cd5caa8ead5e59ab456ff99927, wif_public=xpub661MyMwAqRbcEYS8w7XLSVeEsBXy79zSzH1J8vCdxAZningWLdN3zgtU6SmypHzZG2cYrwpGkWJqRxS6EAW77gd7CHFoXNpBd3LN8xjAyCW, network=wia)>
 
         :param import_key: HD Key to import in WIF format or as byte with key (32 bytes) and chain (32 bytes)
         :type import_key: str, bytes, int
@@ -1247,7 +1247,7 @@ class HDKey(Key):
         self.script_type = script_type_default(witness_type, multisig)
 
         # if (key and not chain) or (not key and chain):
-        #     raise BKeyError("Please specify both key and chain, use import_key attribute "
+        #     raise WKeyError("Please specify both key and chain, use import_key attribute "
         #                     "or use simple Key class instead")
         if not key:
             if not import_key:
@@ -1264,13 +1264,13 @@ class HDKey(Key):
                     compressed = False
                 chain = chain if chain else b'\0' * 32
                 if not import_key.private_byte:
-                    raise BKeyError('Cannot import public Key in HDKey')
+                    raise WKeyError('Cannot import public Key in HDKey')
                 key = import_key.private_byte
                 key_type = 'private'
             else:
                 kf = get_key_format(import_key)
                 if kf['format'] == 'address':
-                    raise BKeyError("Can not create HDKey object from address")
+                    raise WKeyError("Can not create HDKey object from address")
                 if len(kf['script_types']) == 1:
                     self.script_type = kf['script_types'][0]
                 if len(kf['witness_types']) == 1 and not witness_type:
@@ -1292,7 +1292,7 @@ class HDKey(Key):
                     child_index = int.from_bytes(bkey[9:13], 'big')
                     chain = bkey[13:45]
                 elif kf['format'] == 'mnemonic':
-                    raise BKeyError("Use HDKey.from_passphrase() method to parse a passphrase")
+                    raise WKeyError("Use HDKey.from_passphrase() method to parse a passphrase")
                 elif kf['format'] == 'wif_protected':
                     key, compressed = self._bip38_decrypt(import_key, password, network.name, witness_type)
                     chain = chain if chain else b'\0' * 32
@@ -1391,13 +1391,13 @@ class HDKey(Key):
         chain = i[32:]
         key_int = int.from_bytes(key, 'big')
         if key_int >= secp256k1_n:
-            raise BKeyError("Key cannot be greater than secp256k1_n. Try another index number.")
+            raise WKeyError("Key cannot be greater than secp256k1_n. Try another index number.")
         return key, chain
 
     @property
     def fingerprint(self):
         """
-        Get key fingerprint: the last for bytes of the hash160 of this key.
+        Get key fingerprint: the last four bytes of the hash160 of this key.
 
         :return bytes:
         """
@@ -1444,7 +1444,7 @@ class HDKey(Key):
         if isinstance(addr, str):
             addr = addr.encode('utf-8')
         if double_sha256(addr)[0:4] != addresshash:
-            raise BKeyError('Addresshash verification failed! Password or '
+            raise WKeyError('Addresshash verification failed! Password or '
                             'specified network %s might be incorrect' % network)
         return priv, compressed
 
@@ -1570,12 +1570,11 @@ class HDKey(Key):
         Determine subkey for HD Key for given path.
         Path format: m / purpose' / coin_type' / account' / change / address_index
 
-        See BIP0044 bitcoin proposal for more explanation.
 
         >>> wif = 'xprv9s21ZrQH143K4LvcS93AHEZh7gBiYND6zMoRiZQGL5wqbpCU2KJDY87Txuv9dduk9hAcsL76F8b5JKzDREf8EmXjbUwN1c4nR9GEx56QGg2'
         >>> k = HDKey(wif)
         >>> k.subkey_for_path("m/44'/0'/0'/0/2")
-        <HDKey(public_hex=03004331ca7f0dcdd925abc4d0800a0d4a0562a02c257fa39185c55abdfc4f0c0c, wif_public=xpub6GyQoEbMUNwu1LnbiCSaD8wLrcjyRCEQA8tNsFCH4pnvCbuWSZkSB6LUNe89YsCBTg1Ncs7vHJBjMvw2Q7siy3A4g1srAq7Lv3CtEXghv44, network=bitcoin)>
+        <HDKey(public_hex=03004331ca7f0dcdd925abc4d0800a0d4a0562a02c257fa39185c55abdfc4f0c0c, wif_public=xpub6GyQoEbMUNwu1LnbiCSaD8wLrcjyRCEQA8tNsFCH4pnvCbuWSZkSB6LUNe89YsCBTg1Ncs7vHJBjMvw2Q7siy3A4g1srAq7Lv3CtEXghv44, network=wia)>
 
         :param path: BIP0044 key path
         :type path: str, list
@@ -1588,7 +1587,7 @@ class HDKey(Key):
         if isinstance(path, TYPE_TEXT):
             path = path.split("/")
         if self.key_type == 'single':
-            raise BKeyError("Key derivation cannot be used for 'single' type keys")
+            raise WKeyError("Key derivation cannot be used for 'single' type keys")
         key = self
         first_public = False
         if path[0] == 'm':  # Use Private master key
@@ -1601,13 +1600,13 @@ class HDKey(Key):
                 _logger.info("Path length > 1 can be slow for larger paths, use Wallet Class to generate keys paths")
             for item in path:
                 if not item:
-                    raise BKeyError("Could not parse path. Index is empty.")
+                    raise WKeyError("Could not parse path. Index is empty.")
                 hardened = item[-1] in "'HhPp"
                 if hardened:
                     item = item[:-1]
                 index = int(item)
                 if index < 0:
-                    raise BKeyError("Could not parse path. Index must be a positive integer.")
+                    raise WKeyError("Could not parse path. Index must be a positive integer.")
                 if first_public or not key.is_private:
                     key = key.child_public(index=index, network=network)  # TODO hardened=hardened key?
                     first_public = False
@@ -1645,7 +1644,7 @@ class HDKey(Key):
         ks = [k for k in WALLET_KEY_STRUCTURES if
               k['witness_type'] == self.witness_type and k['multisig'] == self.multisig and k['purpose'] is not None]
         if len(ks) > 1:
-            raise BKeyError("Please check definitions in WALLET_KEY_STRUCTURES. Multiple options found for "
+            raise WKeyError("Please check definitions in WALLET_KEY_STRUCTURES. Multiple options found for "
                             "witness_type - multisig combination")
         if ks and not purpose:
             purpose = ks[0]['purpose']
@@ -1721,7 +1720,7 @@ class HDKey(Key):
         if network is None:
             network = self.network.name
         if not self.is_private:
-            raise BKeyError("Need a private key to create child private key")
+            raise WKeyError("Need a private key to create child private key")
         if hardened:
             index |= 0x80000000
             data = b'\0' + self.private_byte + index.to_bytes(4, 'big')
@@ -1731,10 +1730,10 @@ class HDKey(Key):
 
         key = int.from_bytes(key, 'big')
         if key >= secp256k1_n:
-            raise BKeyError("Key cannot be greater than secp256k1_n. Try another index number.")
+            raise WKeyError("Key cannot be greater than secp256k1_n. Try another index number.")
         newkey = (key + self.secret) % secp256k1_n
         if newkey == 0:
-            raise BKeyError("Key cannot be zero. Try another index number.")
+            raise WKeyError("Key cannot be zero. Try another index number.")
         newkey = int.to_bytes(newkey, 32, 'big')
 
         return HDKey(key=newkey, chain=chain, depth=self.depth+1, parent_fingerprint=self.fingerprint,
@@ -1769,12 +1768,12 @@ class HDKey(Key):
         if network is None:
             network = self.network.name
         if index > 0x80000000:
-            raise BKeyError("Cannot derive hardened key from public private key. Index must be less than 0x80000000")
+            raise WKeyError("Cannot derive hardened key from public private key. Index must be less than 0x80000000")
         data = self.public_byte + index.to_bytes(4, 'big')
         key, chain = self._key_derivation(data)
         key = int.from_bytes(key, 'big')
         if key >= secp256k1_n:
-            raise BKeyError("Key cannot be greater than secp256k1_n. Try another index number.")
+            raise WKeyError("Key cannot be greater than secp256k1_n. Try another index number.")
 
         x, y = self.public_point()
         if USE_FASTECDSA:
@@ -1850,7 +1849,7 @@ class Signature(object):
             hash_type = int.from_bytes(signature[-1:], 'big')
             signature = convert_der_sig(signature[:-1], as_hex=False)
         if len(signature) != 64:
-            raise BKeyError("Signature length must be 64 bytes or 128 character hexstring")
+            raise WKeyError("Signature length must be 64 bytes or 128 character hexstring")
         r = int.from_bytes(signature[:32], 'big')
         s = int.from_bytes(signature[32:], 'big')
         return Signature(r, s, signature=signature, der_signature=der_signature, public_key=public_key,
@@ -1931,7 +1930,7 @@ class Signature(object):
     def __init__(self, r, s, txid=None, secret=None, signature=None, der_signature=None, public_key=None, k=None,
                  hash_type=SIGHASH_ALL):
         """
-        Initialize Signature object with provided r and r value
+        Initialize Signature object with provided r and s value
 
         >>> r = 32979225540043540145671192266052053680452913207619328973512110841045982813493
         >>> s = 12990793585889366641563976043319195006380846016310271470330687369836458989268
@@ -1962,9 +1961,9 @@ class Signature(object):
         self.x = None
         self.y = None
         if self.r < 1 or self.r >= secp256k1_n:
-            raise BKeyError('Invalid Signature: r is not a positive integer smaller than the curve order')
+            raise WKeyError('Invalid Signature: r is not a positive integer smaller than the curve order')
         elif self.s < 1 or self.s >= secp256k1_n:
-            raise BKeyError('Invalid Signature: s is not a positive integer smaller than the curve order')
+            raise WKeyError('Invalid Signature: s is not a positive integer smaller than the curve order')
         self._txid = None
         self.txid = txid
         self.secret = None if not secret else int(secret)
@@ -1975,7 +1974,7 @@ class Signature(object):
         else:
             self._signature = to_bytes(signature)
         if signature and len(signature) != 128:
-            raise BKeyError('Invalid Signature: length must be 64 bytes')
+            raise WKeyError('Invalid Signature: length must be 64 bytes')
         self._public_key = None
         self.public_key = public_key
         self.k = k
@@ -2018,7 +2017,7 @@ class Signature(object):
 
         if USE_FASTECDSA:
             if not fastecdsa_secp256k1.is_point_on_curve((self.x, self.y)):
-                raise BKeyError('Invalid public key, point is not on secp256k1 curve')
+                raise WKeyError('Invalid public key, point is not on secp256k1 curve')
         self._public_key = value
 
     def hex(self):
