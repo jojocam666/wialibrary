@@ -1,28 +1,12 @@
 # -*- coding: utf-8 -*-
-#
-#    BitcoinLib - Python Cryptocurrency Library
 #    VALUE class - representing cryptocurrency values
-#    © 2020 November - 1200 Web Development <http://1200wd.com/>
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-
-from bitcoinlib.networks import *
-from bitcoinlib.config.config import NETWORK_DENOMINATORS
 
 
-def value_to_satoshi(value, network=None):
+from wialib.networks import *
+from wialib.config.config import NETWORK_DENOMINATORS
+
+
+def value_to_lio(value, network=None):
     """
     Convert Value object or value string to smallest denominator amount as integer
 
@@ -48,11 +32,11 @@ class Value:
     """
 
     @classmethod
-    def from_satoshi(cls, value, denominator=None, network=DEFAULT_NETWORK):
+    def from_lio(cls, value, denominator=None, network=DEFAULT_NETWORK):
         """
         Initialize Value class with smallest denominator as input. Such as represented in script and transactions cryptocurrency values.
 
-        :param value: Amount of Satoshi's / smallest denominator for this network
+        :param value: Amount of lio's / smallest denominator for this network
         :type value: int
         :param denominator: Denominator as integer or string. Such as 0.001 or m for milli, 1000 or k for kilo, etc. See NETWORK_DENOMINATORS for list of available denominator symbols.
         :type denominator: int, float, str
@@ -80,37 +64,35 @@ class Value:
 
         Examples: Initialize value class
         >>> Value(10)
-        Value(value=10.00000000000000, denominator=1.00000000, network='bitcoin')
+        Value(value=10.00000000000000, denominator=1.00000000, network='wia')
 
-        >>> Value('15 mBTC')
-        Value(value=0.01500000000000, denominator=0.00100000, network='bitcoin')
+        >>> Value('15 mWIA')
+        Value(value=0.01500000000000, denominator=0.00100000, network='wia')
 
-        >>> Value('10 sat')
-        Value(value=0.00000010000000, denominator=0.00000001, network='bitcoin')
+        >>> Value('10 lio')
+        Value(value=0.00000010000000, denominator=0.00000001, network='wia')
 
-        >>> Value('1 doge')
-        Value(value=1.00000000000000, denominator=1.00000000, network='dogecoin')
-
-        >>> Value(500, 'm')
+        >>> Value(500, 0.001)
         Value(value=0.50000000000000, denominator=0.00100000, network='bitcoin')
+        
+        >>> Value(500, 'm')
+        Value(value=0.50000000000000, denominator=0.00100000, network='wia')
 
         >>> Value(500, 0.001)
         Value(value=0.50000000000000, denominator=0.00100000, network='bitcoin')
 
         All frequently used arithmetic, comparision and logical operators can be used on the Value object. So you can compare Value object, add them together, divide or multiply them, etc.
 
-        Values need to use the same network / currency if you work with multiple Value objects. I.e. Value('1 BTC') + Value('1 LTC') raises an error.
+        Values need to use the same network / currency if you work with multiple Value objects. I.e. Value('1 BTC') + Value('1 WIA') raises an error.
 
         # Examples: Value operators
-        >>> Value('50000 sat') == Value('5000 fin')  # 1 Satoshi equals 10 Finney, see https://en.bitcoin.it/wiki/Units
+        >>> Value('500 lio') == Value('5000 sat')  # 1 lio equals 10 Satoshi's
         True
 
-        >>> Value('1 btc') > Value('2 btc')
+        >>> Value('1 wia') > Value('2 wia')
         False
 
-        >>> Value('1000 LTC') / 5
-        Value(value=200.00000000000000, denominator=1.00000000, network='litecoin')
-
+        
         >>> Value('0.002 BTC') + 0.02
         Value(value=0.02200000000000, denominator=1.00000000, network='bitcoin')
 
@@ -273,38 +255,36 @@ class Value:
         """
         Get string representation of Value with requested denominator and number of decimals.
 
-        >>> Value(1200000, 'sat').str('m')  # milli Bitcoin
-        '12.00000 mBTC'
+        >>> Value(1200000, 'lio').str('m')  # milli Wia
+        '12.00000 mWIA'
 
-        >>> Value(12000.3, 'sat').str(1)  # Use denominator = 1 for Bitcoin
-        '0.00012000 BTC'
+        >>> Value(12000.3, 'lio').str(1)  # Use denominator = 1 for Wia
+        '0.00012000 WIA'
 
-        >>> Value(12000, 'sat').str('auto')
-        '120.00 µBTC'
+        >>> Value(12000, 'lio').str('auto')
+        '120.00 µWIA'
 
         >>> Value(0.005).str('m')
-        '5.00000 mBTC'
+        '5.00000 mWIA'
 
-        >>> Value(12000, 'sat').str('auto', decimals=0)
-        '120 µBTC'
+        >>> Value(12000, 'lio').str('auto', decimals=0)
+        '120 µWIA'
 
-        >>> Value('13000000 Doge').str('auto')  # Yeah, mega Dogecoins...
-        '13.00000000 MDOGE'
 
         >>> Value('2100000000').str('auto')
-        '2.10000000 GBTC'
+        '2.10000000 GWIA'
 
-        >>> Value('1.5 BTC').str(currency_repr='symbol')
-        '1.50000000 ฿'
+        >>> Value('1.5 WIA').str(currency_repr='symbol')
+        '1.50000000 W'
 
-        >>> Value('1.5 BTC').str(currency_repr='name')
-        '1.50000000 bitcoins'
+        >>> Value('1.5 WIA').str(currency_repr='name')
+        '1.50000000 wias'
 
         :param denominator: Denominator as integer or string. Such as 0.001 or m for milli, 1000 or k for kilo, etc. See NETWORK_DENOMINATORS for list of available denominator symbols. If not provided the default self.denominator value is used. Use value 'auto' to automatically determine best denominator for human readability.
         :type denominator: int, float, str
         :param decimals: Number of decimals to use
         :type decimals: float
-        :param currency_repr: Representation of currency. I.e. code: BTC, name: bitcoins, symbol: ฿
+        :param currency_repr: Representation of currency. I.e. code: WIA, name: wias, symbol: W
         :type currency_repr: str
 
         :return str:
@@ -312,7 +292,7 @@ class Value:
         if denominator is None:
             denominator = self.denominator
         elif denominator == 'auto':
-            # First try denominator=1 and smallest denominator (satoshi)
+            # First try denominator=1 and smallest denominator (lio)
             if 0.001 <= self.value < 1000:
                 denominator = 1
             elif 1 <= self.value / self.network.denominator < 1000:
@@ -346,7 +326,7 @@ class Value:
             cur_code = self.network.currency_symbol
         if currency_repr == 'name':
             cur_code = self.network.currency_name_plural
-        if 'sat' in den_symb and self.network.name == 'bitcoin':
+        if 'lio' in den_symb and self.network.name == 'wia':
             cur_code = ''
         return ("%%.%df %%s%%s" % decimals) % (balance, den_symb, cur_code)
 
@@ -354,12 +334,12 @@ class Value:
         """
         String representation of this Value. Wrapper for the :func:`str` method, but always uses 1 as denominator, meaning main denominator such as BTC, LTC.
 
-        >>> Value('12000 sat').str_unit()
-        '0.00012000 BTC'
+        >>> Value('12000 lio').str_unit()
+        '0.00012000 WIA'
 
         :param decimals: Number of decimals to use
         :type decimals: float
-        :param currency_repr: Representation of currency. I.e. code: BTC, name: Bitcoin, symbol: ฿
+        :param currency_repr: Representation of currency. I.e. code: WIA, name: Wia, symbol: W
         :type currency_repr: str
         :return str:
         """
@@ -369,15 +349,15 @@ class Value:
         """
         String representation of this Value. Wrapper for the :func:`str` method, but automatically determines the denominator depending on the value.
 
-        >>> Value('0.0000012 BTC').str_auto()
-        '120 sat'
+        >>> Value('0.0000012 WIA').str_auto()
+        '120 lio'
 
-        >>> Value('0.0005 BTC').str_auto()
-        '500.00 µBTC'
+        >>> Value('0.0005 WIA').str_auto()
+        '500.00 µWIA'
 
         :param decimals: Number of decimals to use
         :type decimals: float
-        :param currency_repr: Representation of currency. I.e. code: BTC, name: Bitcoin, symbol: ฿
+        :param currency_repr: Representation of currency. I.e. code: WIA, name: Wia, symbol: W
         :type currency_repr: str
         :return str:
         """
@@ -385,9 +365,9 @@ class Value:
         return self.str('auto', decimals, currency_repr)
 
     @property
-    def value_sat(self):
+    def value_lio(self):
         """
-        Value in smallest denominator, i.e. Satoshi for the Bitcoin network
+        Value in smallest denominator, i.e. Lio for the Wia network
 
         :return int:
         """
@@ -395,9 +375,9 @@ class Value:
 
     def to_bytes(self, length=8, byteorder='little'):
         """
-        Representation of value_sat (value in smallest denominator: satoshi's) as bytes string. Used for script or transaction serialization.
+        Representation of value_sat (value in smallest denominator: lio's) as bytes string. Used for script or transaction serialization.
 
-        >>> Value('1 sat').to_bytes()
+        >>> Value('1 lio').to_bytes()
         b'\\x01\\x00\\x00\\x00\\x00\\x00\\x00\\x00'
 
         :param length: Length of bytes string to return, default is 8 bytes
@@ -407,13 +387,13 @@ class Value:
 
         :return bytes:
         """
-        return self.value_sat.to_bytes(length, byteorder)
+        return self.value_lio.to_bytes(length, byteorder)
 
     def to_hex(self, length=16, byteorder='little'):
         """
-        Representation of value_sat (value in smallest denominator: satoshi's) as hexadecimal string.
+        Representation of value_sat (value in smallest denominator: lio's) as hexadecimal string.
 
-        >>> Value('15 sat').to_hex()
+        >>> Value('15 lio').to_hex()
         '0f00000000000000'
 
         :param length: Length of hexadecimal string to return, default is 16 characters
@@ -422,4 +402,4 @@ class Value:
         :type byteorder: str
         :return:
         """
-        return self.value_sat.to_bytes(length // 2, byteorder).hex()
+        return self.value_lio.to_bytes(length // 2, byteorder).hex()
