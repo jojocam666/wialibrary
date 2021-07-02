@@ -1,21 +1,16 @@
 # -*- coding: utf-8 -*-
-#
-#    BitcoinLib - Python Cryptocurrency Library
-#
 #    EXAMPLES - Deserialize and Verify all transactions from the latest block
 #    Just use for testing and experimenting, this library is not optimized for blockchain parsing!
-#
-#    © 2018 October - 1200 Web Development <http://1200wd.com/>
-#
 
-from bitcoinlib.services.services import *
-from bitcoinlib.services.bitcoind import *
+
+from wialib.services.services import *
+from wialib.services.wiad import *
 from pprint import pprint
 
 
-bdc = BitcoindClient()
+wid = WiadClient()
 
-# Check bitcoind connection
+# Check wiad connection
 pprint(bdc.proxy.getnetworkinfo())
 
 # Get latest block
@@ -25,7 +20,7 @@ latest_block = bdc.proxy.getblock(latest_block_hash)
 transactions = latest_block['tx']
 print("Found %d transactions" % len(transactions))
 
-srv = Service(network='bitcoin')
+srv = Service(network='wia')
 
 MAX_TRANSACTIONS = 100
 count = 0
