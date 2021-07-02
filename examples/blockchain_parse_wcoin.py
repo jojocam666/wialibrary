@@ -1,23 +1,18 @@
 # -*- coding: utf-8 -*-
-#
-#    BitcoinLib - Python Cryptocurrency Library
-#
-#    EXAMPLES - Deserialize and Verify all transactions from the specified blocks using Bcoin provider
+#    EXAMPLES - Deserialize and Verify all transactions from the specified blocks using Wcoin provider
 #
 #    Just use for testing and experimenting, this library is not optimized for blockchain parsing!
-#
-#    © 2020 April - 1200 Web Development <http://1200wd.com/>
-#
+
 
 import time
-from bitcoinlib.services.services import Service
+from wialib.services.services import Service
 from pprint import pprint
 
 
 start_time = time.time()
 
 
-srv = Service(providers=['bcoin'])
+srv = Service(providers=['wcoin'])
 
 # Get latest block
 # blocks = [srv.blockcount()]
