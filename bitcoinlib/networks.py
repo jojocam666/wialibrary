@@ -1,25 +1,10 @@
 # -*- coding: utf-8 -*-
-#
-#    BitcoinLib - Python Cryptocurrency Library
+
 #    NETWORK class reads network definitions and with helper methods
-#    © 2017 - 2020 November - 1200 Web Development <http://1200wd.com/>
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+
 
 import json
-from bitcoinlib.encoding import *
+from wialib.encoding import *
 
 
 _logger = logging.getLogger(__name__)
@@ -44,7 +29,7 @@ def _read_network_definitions():
     :return dict: Network definitions
     """
 
-    fn = Path(BCL_DATA_DIR, 'networks.json')
+    fn = Path(WIL_DATA_DIR, 'networks.json')
     f = fn.open()
 
     try:
@@ -90,10 +75,9 @@ def network_by_value(field, value):
     
     Example, get available networks for WIF or address prefix
 
-    >>> network_by_value('prefix_wif', 'B0')
-    ['litecoin', 'litecoin_legacy']
+   
     >>> network_by_value('prefix_address', '6f')
-    ['testnet', 'litecoin_testnet']
+    ['testnet', 'wia']
 
     This method does not work for HD prefixes, use 'wif_prefix_search' instead
 
@@ -125,9 +109,9 @@ def network_defined(network):
     
     Networks of this library are defined in networks.json in the operating systems user path.
 
-    >>> network_defined('bitcoin')
+    >>> network_defined('wia')
     True
-    >>> network_defined('ethereum')
+    >>> network_defined('bitcoin')
     False
     
     :param network: Network name
@@ -144,20 +128,20 @@ def wif_prefix_search(wif, witness_type=None, multisig=None, network=None):
     """
     Extract network, script type and public/private information from HDKey WIF or WIF prefix.
 
-    Example, get bitcoin 'xprv' info:
+    Example, get wia 'xprv' info:
 
     >>> wif_prefix_search('0488ADE4', network='bitcoin', multisig=False)
-    [{'prefix': '0488ADE4', 'is_private': True, 'prefix_str': 'xprv', 'network': 'bitcoin', 'witness_type': 'legacy', 'multisig': False, 'script_type': 'p2pkh'}]
+    [{'prefix': '0488ADE4', 'is_private': True, 'prefix_str': 'xprv', 'network': 'wia', 'witness_type': 'legacy', 'multisig': False, 'script_type': 'p2pkh'}]
 
     Or retreive info with full WIF string:
 
-    >>> wif_prefix_search('xprv9wTYmMFdV23N21MM6dLNavSQV7Sj7meSPXx6AV5eTdqqGLjycVjb115Ec5LgRAXscPZgy5G4jQ9csyyZLN3PZLxoM1h3BoPuEJzsgeypdKj', network='bitcoin', multisig=False)
-    [{'prefix': '0488ADE4', 'is_private': True, 'prefix_str': 'xprv', 'network': 'bitcoin', 'witness_type': 'legacy', 'multisig': False, 'script_type': 'p2pkh'}]
+    >>> wif_prefix_search('xprv9wTYmMFdV23N21MM6dLNavSQV7Sj7meSPXx6AV5eTdqqGLjycVjb115Ec5LgRAXscPZgy5G4jQ9csyyZLN3PZLxoM1h3BoPuEJzsgeypdKj', network='wia', multisig=False)
+    [{'prefix': '0488ADE4', 'is_private': True, 'prefix_str': 'xprv', 'network': 'wia', 'witness_type': 'legacy', 'multisig': False, 'script_type': 'p2pkh'}]
 
     Can return multiple items if no network is specified:
 
     >>> [nw['network'] for nw in wif_prefix_search('0488ADE4', multisig=True)]
-    ['bitcoin', 'dash', 'dogecoin']
+    ['wia','bitcoin']
 
     :param wif: WIF string or prefix as hexadecimal string
     :type wif: str
@@ -206,13 +190,13 @@ def print_value(value, network=DEFAULT_NETWORK, rep='string', denominator=1, dec
 
     Wrapper for the Network().print_value method.
 
-    :param value: Value in smallest denominator such as Satoshi
+    :param value: Value in smallest denominator such as Lio
     :type value: int, float
-    :param network: Network name as string, default is 'bitcoin'
+    :param network: Network name as string, default is 'wia'
     :type network: str
     :param rep: Currency representation: 'string', 'symbol', 'none' or your own custom name
     :type rep: str
-    :param denominator: Unit to use in representation. Default is 1. I.e. 1 = 1 BTC, 0.001 = milli BTC / mBTC, 1e-8 = Satoshi's
+    :param denominator: Unit to use in representation. Default is 1. I.e. 1 = 1 WIA, 0.001 = milli WIA / mWIA, 1e-8 = Lio's
     :type denominator: float
     :param decimals: Number of digits after the decimal point, leave empty for automatic determination based on value. Use integer value between 0 and 8
     :type decimals: int
@@ -227,7 +211,7 @@ class Network(object):
     Network class with all network definitions. 
     
     Prefixes for WIF, P2SH keys, HD public and private keys, addresses. A currency symbol and type, the 
-    denominator (such as satoshi) and a BIP0044 cointype.
+    denominator (such as lio) and a BIP0044 cointype.
     
     """
 
@@ -247,10 +231,10 @@ class Network(object):
         self.prefix_wif = bytes.fromhex(NETWORK_DEFINITIONS[network_name]['prefix_wif'])
         self.denominator = NETWORK_DEFINITIONS[network_name]['denominator']
         self.bip44_cointype = NETWORK_DEFINITIONS[network_name]['bip44_cointype']
-        self.dust_amount = NETWORK_DEFINITIONS[network_name]['dust_amount']  # Dust amount in satoshi
-        self.fee_default = NETWORK_DEFINITIONS[network_name]['fee_default']  # Default fee in satoshi per kilobyte
-        self.fee_min = NETWORK_DEFINITIONS[network_name]['fee_min']  # Minimum transaction fee in satoshi per kilobyte
-        self.fee_max = NETWORK_DEFINITIONS[network_name]['fee_max']  # Maximum transaction fee in satoshi per kilobyte
+        self.dust_amount = NETWORK_DEFINITIONS[network_name]['dust_amount']  # Dust amount in lio
+        self.fee_default = NETWORK_DEFINITIONS[network_name]['fee_default']  # Default fee in lio per kilobyte
+        self.fee_min = NETWORK_DEFINITIONS[network_name]['fee_min']  # Minimum transaction fee in lio per kilobyte
+        self.fee_max = NETWORK_DEFINITIONS[network_name]['fee_max']  # Maximum transaction fee in lio per kilobyte
         self.priority = NETWORK_DEFINITIONS[network_name]['priority']
         self.prefixes_wif = NETWORK_DEFINITIONS[network_name]['prefixes_wif']
 
@@ -275,16 +259,16 @@ class Network(object):
         """
         Return the value as string with currency symbol
 
-        Print value for 100000 satoshi as string in human readable format
+        Print value for 100000 lio as string in human readable format
 
-        >>> Network('bitcoin').print_value(100000)
-        '0.00100000 BTC'
+        >>> Network('wia').print_value(100000)
+        '0.00100000 WIA'
 
         :param value: Value in smallest denominator such as Satoshi
         :type value: int, float
         :param rep: Currency representation: 'string', 'symbol', 'none' or your own custom name
         :type rep: str
-        :param denominator: Unit to use in representation. Default is 1. I.e. 1 = 1 BTC, 0.001 = milli BTC / mBTC
+        :param denominator: Unit to use in representation. Default is 1. I.e. 1 = 1 WIA, 0.001 = milli WIA / mWIA
         :type denominator: float
         :param decimals: Number of digits after the decimal point, leave empty for automatic determination based on value. Use integer value between 0 and 8
         :type decimals: int
@@ -314,9 +298,9 @@ class Network(object):
         """
         Get WIF prefix for this network and specifications in arguments
 
-        >>> Network('bitcoin').wif_prefix()  # xpub
+        >>> Network('wia').wif_prefix()  # xpub
         b'\\x04\\x88\\xb2\\x1e'
-        >>> Network('bitcoin').wif_prefix(is_private=True, witness_type='segwit', multisig=True)  # Zprv
+        >>> Network('wia').wif_prefix(is_private=True, witness_type='segwit', multisig=True)  # Zprv
         b'\\x02\\xaaz\\x99'
 
         :param is_private: Private or public key, default is True
