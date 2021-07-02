@@ -1480,7 +1480,7 @@ class Transaction(object):
         print("Inputs")
         replace_by_fee = False
         for ti in self.inputs:
-            print("-", ti.address, Value.from_satoshi(ti.value, network=self.network).str(1), ti.prev_txid.hex(),
+            print("-", ti.address, Value.from_lio(ti.value, network=self.network).str(1), ti.prev_txid.hex(),
                   ti.output_n_int)
             validstr = "not validated"
             if ti.valid:
@@ -1519,7 +1519,7 @@ class Transaction(object):
                     spent_str = 'S'
                 elif to.spent is False:
                     spent_str = 'U'
-                print("-", to.address, Value.from_satoshi(to.value, network=self.network).str(1), to.script_type,
+                print("-", to.address, Value.from_lio(to.value, network=self.network).str(1), to.script_type,
                       spent_str)
         if replace_by_fee:
             print("Replace by fee: Enabled")
@@ -2194,7 +2194,7 @@ class Transaction(object):
 
     def calculate_fee(self):
         """
-        Get fee for this transaction in smallest denominator (i.e. Satoshi) based on its size and the
+        Get fee for this transaction in smallest denominator (i.e. lio) based on its size and the
         transaction.fee_per_kb value
 
         :return int: Estimated transaction fee
@@ -2233,11 +2233,11 @@ class Transaction(object):
         :return:
         """
         if not filename:
-            p = Path(BCL_DATA_DIR, '%s.tx' % self.txid)
+            p = Path(WIL_DATA_DIR, '%s.tx' % self.txid)
         else:
             p = Path(filename)
             if not p.parent or str(p.parent) == '.':
-                p = Path(BCL_DATA_DIR, filename)
+                p = Path(WIL_DATA_DIR, filename)
         f = p.open('wb')
         pickle.dump(self, f)
         f.close()
