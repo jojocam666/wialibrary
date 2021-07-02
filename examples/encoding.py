@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-#    BitcoinLib - Python Cryptocurrency Library
-#
 #    EXAMPLES - Encoding helper methods
-#
-#    © 2017 September - 1200 Web Development <http://1200wd.com/>
-#
 
-from bitcoinlib.encoding import *
+
+from wialib.encoding import *
 
 #
 # Change Base conversion examples
