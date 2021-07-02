@@ -1,25 +1,8 @@
 # -*- coding: utf-8 -*-
-#
-#    BitcoinLib - Python Cryptocurrency Library
 #    MNEMONIC class for BIP0039 Mnemonic Key management
-#    © 2016 - 2020 November - 1200 Web Development <http://1200wd.com/>
-#
-#    This program is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU Affero General Public License as
-#    published by the Free Software Foundation, either version 3 of the
-#    License, or (at your option) any later version.
-#
-#    This program is distributed in the hope that it will be useful,
-#    but WITHOUT ANY WARRANTY; without even the implied warranty of
-#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#    GNU Affero General Public License for more details.
-#
-#    You should have received a copy of the GNU Affero General Public License
-#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
 
-from bitcoinlib.encoding import *
-from bitcoinlib.config.secp256k1 import secp256k1_n
+from wialib.encoding import *
+from wialib.config.secp256k1 import secp256k1_n
 
 
 class Mnemonic(object):
@@ -40,7 +23,7 @@ class Mnemonic(object):
         
         """
         self._wordlist = []
-        with Path(BCL_INSTALL_DIR, 'wordlist', '%s.txt' % language).open() as f:
+        with Path(WIL_INSTALL_DIR, 'wordlist', '%s.txt' % language).open() as f:
             self._wordlist = [w.strip() for w in f.readlines()]
 
     @staticmethod
@@ -204,9 +187,9 @@ class Mnemonic(object):
             words = words.split(' ')
 
         wlcount = {}
-        for fn in Path(BCL_INSTALL_DIR, 'wordlist').iterdir():
+        for fn in Path(WIL_INSTALL_DIR, 'wordlist').iterdir():
             if fn.suffix == ".txt":
-                with open(os.path.join(str(BCL_INSTALL_DIR), 'wordlist', fn)) as f:
+                with open(os.path.join(str(WIL_INSTALL_DIR), 'wordlist', fn)) as f:
                     wordlist = [w.strip() for w in f.readlines()]
                     language = fn.name.split('.')[0]
                     wlcount[language] = 0
@@ -233,7 +216,7 @@ class Mnemonic(object):
         language = self.detect_language(words)
         if isinstance(words, TYPE_TEXT):
             words = words.split(' ')
-        with Path(BCL_INSTALL_DIR, 'wordlist', '%s.txt' % language).open() as f:
+        with Path(WIL_INSTALL_DIR, 'wordlist', '%s.txt' % language).open() as f:
             wordlist = [w.strip() for w in f.readlines()]
             for word in words:
                 if word not in wordlist:
