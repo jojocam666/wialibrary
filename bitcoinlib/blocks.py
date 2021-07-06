@@ -215,7 +215,6 @@ class Block:
         rb += self.merkle_root[::-1]
         rb += self.time.to_bytes(4, 'little')
         rb += self.bits[::-1]
-        rb += self.nonce[::-1]
         if len(rb) != 80:
             raise ValueError("Missing or incorrect length of 1 of the block header variables: version, prev_block, "
                              "merkle_root, time or bits .")
