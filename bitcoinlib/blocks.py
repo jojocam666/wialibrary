@@ -173,7 +173,7 @@ class Block:
 
         :return dict:
         """
-        return {
+        block_dict = {
             'block_hash': self.block_hash.hex(),
             'height': self.height,
             'version': self.version_int,
@@ -185,6 +185,8 @@ class Block:
             'transactions': self.transactions,
             'confirmations': self.confirmations
         }
+        
+        return block_dict
 
    
 
