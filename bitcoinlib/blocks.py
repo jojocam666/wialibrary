@@ -26,7 +26,6 @@ class Block:
         :type merkle_root: bytes, str
         :param time: Timestamp of time when block was included in blockchain
         :type time: int, bytes
-        :param bits: Bits are used to indicate target / difficulty
         :type bits: bytes, str, int
         :param transactions: List of transaction included in this block. As list of transaction objects or list of transaction IDs strings
         :type transactions: list of Transaction, list of str
