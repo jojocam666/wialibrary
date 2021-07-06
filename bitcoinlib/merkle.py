@@ -24,7 +24,9 @@ def get_power_of_two_floor(x: int) -> int:
         return x
     else:
         return 2 * get_power_of_two_floor(x // 2)
-      
+
+# define a "generalized index" of a node as 2**depth + index    
+    
 def merkle_tree(leaves: Sequence[Bytes32]) -> Sequence[Bytes32]:
     """
     Return an array representing the tree nodes by generalized index: 
