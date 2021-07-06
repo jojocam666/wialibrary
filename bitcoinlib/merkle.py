@@ -109,4 +109,35 @@ def get_generalized_index(typ: SSZType, path: Sequence[Union[int, SSZVariableNam
             base_index = (GeneralizedIndex(2) if issubclass(typ, (List, ByteList)) else GeneralizedIndex(1))
             root = GeneralizedIndex(root * base_index * get_power_of_two_ceil(chunk_count(typ)) + pos)
             typ = get_elem_type(typ, p)
-    return root        
+    return root
+
+def concat_generalized_indices(*indices: GeneralizedIndex) -> GeneralizedIndex:
+    """
+    Given generalized indices i1 for A -> B, i2 for B -> C .... i_n for Y -> Z, returns
+    the generalized index for A -> Z.
+    """
+    o = GeneralizedIndex(1)
+    for i in indices:
+        o = GeneralizedIndex(o * get_power_of_two_floor(i) + (i - get_power_of_two_floor(i)))
+    return o
+
+def get_generalized_index_length(index: GeneralizedIndex) -> int:
+    """
+    Return the length of a path represented by a generalized index.
+    """
+    return int(log2(index))
+
+def get_generalized_index_bit(index: GeneralizedIndex, position: int) -> bool:
+    """
+    Return the given bit of a generalized index.
+    """
+    return (index & (1 << position)) > 0
+
+def generalized_index_sibling(index: GeneralizedIndex) -> GeneralizedIndex:
+    return GeneralizedIndex(index ^ 1)
+
+def generalized_index_child(index: GeneralizedIndex, right_side: bool) -> GeneralizedIndex:
+    return GeneralizedIndex(index * 2 + right_side)
+
+def generalized_index_parent(index: GeneralizedIndex) -> GeneralizedIndex:
+    return GeneralizedIndex(index // 2)
