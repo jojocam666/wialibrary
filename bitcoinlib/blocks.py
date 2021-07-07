@@ -232,45 +232,23 @@ class Block:
         """
         Extract chain_version signaling information from the block's version number.
 
-        The block version shows which software the miner used to create the block. Changes to the bitcoin
-        protocol are described in Bitcoin Improvement Proposals (BIPs) and a miner shows which BIPs it supports
-        in the block version number.
+        The block chain_version shows on which chain the minin_contract used to create the block. 
 
-        This method returns a list of BIP version number as string.
+        This method returns a list of  chain_version number as string.
 
-        Example: This block uses the BIP9 versioning system and signals BIP141 (segwit)
+        Example: This block uses the WIA1 versioning system and signals WIA12 (segwit)
         >>> from wialib.services.services import Service
         >>> srv = Service()
         >>> b = srv.getblock(450001)
-        >>> print(b.version_bips())
-        ['BIP9', 'BIP141']
+        >>> print(b.chain_version())
+        ['WIA1', 'WIA12']
 
         :return list of str:
         """
-        bips = []
-        if self.version_int >> 29 == 0b001 and self.height >= 407021:
-            bips.append('BIP9')
-            if self.version_int >> 0 & 1 == 1:
-                bips.append('BIP68')   # BIP112 (CHECKSEQUENCEVERIFY), BIP113 - Relative lock-time using consensus-enforced sequence numbers
-            if self.version_int >> 1 & 1 == 1:
-                bips.append('BIP141')  # BIP143, BIP147 (Segwit)
-            if self.version_int >> 4 & 1 == 1:
-                bips.append('BIP91')   # Segwit?
-            if self.version_int == 0x30000000:
-                bips.append('BIP109')  # Increase block size 2MB (rejected)
-            mask = 0x1fffe000
-            if self.version_int & mask and self.height >= 500000:
-                bips.append('BIP310')   # version-rolling
-        elif self.height < 500000:
-            if self.version_int == 2:
-                bips.append('BIP34')    # Version 2: Block Height in Coinbase
-            if self.version_int == 3:
-                bips.append('BIP66')    # Version 3: Strict DER signatures
-            if self.version_int == 4:
-                bips.append('BIP65')    # Version 4: Introduce CHECKLOCKTIMEVERIFY
-            if self.version_int == 0x30000000:
-                bips.append('BIP109')   # Increase block size 2MB (rejected)
-            if self.version_int == 0x20000007:
-                bips.append('BIP101')   # Increase block size 8MB (rejected)
-
-        return bips
+        vrs = []
+        chain_added = new_sidechain()
+        
+        if self.chain_version_int >> 29 == 0b001 and self.height >= 407021:
+            vrs.append('WIA1')
+           
+        return vrs
