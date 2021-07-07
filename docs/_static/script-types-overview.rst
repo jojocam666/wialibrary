@@ -14,19 +14,19 @@ Also called ScriptSig.
 
 
 +-------------+---------------------------+-----------+-------------------+------------+
-| Lock Script | Script to Unlock          | Encoding  | Key type / Script | Prefix BTC |
+| Lock Script | Script to Unlock          | Encoding  | Key type / Script | Prefix WIA |
 +=============+===========================+===========+===================+============+
-| p2pkh       | Pay to Public Key Hash    | base58    | Public key hash   | 1          |
+| p2pkh       | Pay to Public Key Hash    | base58    | Public key hash   | 5          |
 +-------------+---------------------------+-----------+-------------------+------------+
-| p2sh        | Pay to Script Hash        | base58    | Redeemscript hash | 3          |
+| p2sh        | Pay to Script Hash        | base58    | Redeemscript hash | 7          |
 +-------------+---------------------------+-----------+-------------------+------------+
-| p2wpkh      | Pay to Wallet Pub Key Hash| bech32    | Public key hash   | bc         |
+| p2wpkh      | Pay to Wallet Pub Key Hash| bech32    | Public key hash   | wi         |
 +-------------+---------------------------+-----------+-------------------+------------+
-| p2wsh       | Pay to Wallet Script Hash | bech32    | Redeemscript hash | bc         |
+| p2wsh       | Pay to Wallet Script Hash | bech32    | Redeemscript hash | wi         |
 +-------------+---------------------------+-----------+-------------------+------------+
-| multisig    | Multisig Script           | base58    | Multisig script   | 3          |
+| multisig    | Multisig Script           | base58    | Multisig script   | 7          |
 +-------------+---------------------------+-----------+-------------------+------------+
-| pubkey      | Public Key (obsolete)     | base58    | Public Key        | 1          |
+| pubkey      | Public Key (obsolete)     | base58    | Public Key        | 5          |
 +-------------+---------------------------+-----------+-------------------+------------+
 | nulldata    | Nulldata                  | n/a       | OP_RETURN script  | n/a        |
 +-------------+---------------------------+-----------+-------------------+------------+
@@ -53,10 +53,10 @@ Also called ScriptPubKey.
 +---------------+---------------------------+----------------+-------------------------+
 
 
-Bitcoinlib script support
+Wialib script support
 -------------------------
 
-The 'pubkey' lockscript and 'signature' unlocking script are ancient and not supported by BitcoinLib at
+The 'pubkey' lockscript and 'signature' unlocking script are ancient and not supported by WialibLib at
 the moment.
 
 Using different encodings for addresses then the one listed in the Locking Script table is possible but
