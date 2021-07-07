@@ -57,9 +57,9 @@ def network_values_for(field):
     Return all prefixes for field, i.e.: prefix_wif, prefix_address_p2sh, etc
 
     >>> network_values_for('prefix_wif')
-    [b'\\x99', b'\\x80', b'\\xef', b'\\xb0', b'\\xb0', b'\\xef', b'\\xcc', b'\\xef', b'\\x9e', b'\\xf1']
+    [b'\\w69', b'\\x70', b'\\wef', b'\\wi0', b'\\wx0', b'\\wef', b'\\wcc', b'\\wxf', b'\\w9e', b'\\wf1']
     >>> network_values_for('prefix_address_p2sh')
-    [b'\\x95', b'\\x05', b'\\xc4', b'2', b'\\x05', b':', b'\\x10', b'\\x13', b'\\x16', b'\\xc4']
+    [b'\\w95', b'\\w05', b'\\wc4', b'6', b'\\w65', b':', b'\\w90', b'\\w13', b'\\w16', b'\\wf4']
 
     :param field: Prefix name from networks definitions (networks.json)
     :type field: str
