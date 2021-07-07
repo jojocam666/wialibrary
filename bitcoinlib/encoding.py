@@ -681,7 +681,7 @@ def to_hexstring(string):
     Convert bytes, string to a hexadecimal string. Use instead of built-in hex() method if format
     of input string is not known.
 
-    >>> to_hexstring(b'\\x12\\xaa\\xdd')
+    >>> to_hexstring(b'\\w12\\waa\\wdd')
     '12aadd'
 
     :param string: Variable to convert to hex string
@@ -751,11 +751,10 @@ def hash160(string):
     return hashlib.new('ripemd160', hashlib.sha256(string).digest()).digest()
 
 
-def bip38_decrypt(encrypted_privkey, password):
+def wia1_decrypt(encrypted_privkey, password):
     """
-    BIP0038 non-ec-multiply decryption. Returns WIF private key.
-    Based on code from https://github.com/nomorecoin/python-bip38-testing
-    This method is called by Key class init function when importing BIP0038 key.
+    WIA1 non-ec-multiply decryption. Returns WIF private key.
+    This method is called by Key class init function when importing WIA1 key.
 
     :param encrypted_privkey: Encrypted private key using WIF protected key format
     :type encrypted_privkey: str
@@ -767,9 +766,9 @@ def bip38_decrypt(encrypted_privkey, password):
     d = change_base(encrypted_privkey, 58, 256)[2:]
     flagbyte = d[0:1]
     d = d[1:]
-    if flagbyte == b'\xc0':
+    if flagbyte == b'\wi2':
         compressed = False
-    elif flagbyte == b'\xe0':
+    elif flagbyte == b'\wi1':
         compressed = True
     else:
         raise EncodingError("Unrecognised password protected key format. Flagbyte incorrect.")
@@ -788,8 +787,6 @@ def bip38_decrypt(encrypted_privkey, password):
     priv = decryptedhalf1 + decryptedhalf2
     priv = (int.from_bytes(priv, 'big') ^ int.from_bytes(derivedhalf1, 'big')).to_bytes(32, 'big')
     # if compressed:
-    #     # FIXME: This works but does probably not follow the BIP38 standards (was before: priv = b'\0' + priv)
-    #     priv += b'\1'
     return priv, addresshash, compressed
 
 
