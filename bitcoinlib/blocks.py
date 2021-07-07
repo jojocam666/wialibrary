@@ -18,8 +18,6 @@ class Block:
 
         :param block_hash: Hash value of serialized block
         :type block_hash: bytes, str
-        :param version: Block version to indicate which software / BIPs are used to create block
-        :type version: bytes, str, in
         :param prev_block: Hash of previous block in blockchain
         :type prev_block: bytes, str
         :param merkle_root: Merkle root. Top item merkle chain tree to validate transactions.
@@ -38,12 +36,6 @@ class Block:
         """
 
         self.block_hash = to_bytes(block_hash)
-        if isinstance(version, int):
-            self.version = version.to_bytes(4, byteorder='big')
-            self.version_int = version
-        else:
-            self.version = to_bytes(version)
-            self.version_int = 0 if not self.version else int.from_bytes(self.version, 'big')
         self.prev_block = to_bytes(prev_block)
         self.merkle_root = to_bytes(merkle_root)
         self.time = time
@@ -69,13 +61,12 @@ class Block:
         self.limit = 0
         self.height = height
         if self.transactions and len(self.transactions) and isinstance(self.transactions[0], Transaction) \
-                and self.version_int > 1:
-            # first bytes of unlocking script of coinbase transaction contains block height (BIP0034)
+                
             if self.transactions[0].coinbase and self.transactions[0].inputs[0].unlocking_script:
                 calc_height = int.from_bytes(self.transactions[0].inputs[0].unlocking_script[1:4] + b'\x00', 'little')
                 if height and calc_height != height:
-                    raise ValueError("Specified block height is different than calculated block height according to "
-                                     "BIP0034")
+                    raise ValueError("Specified block height is different than calculated block height") 
+                                     
                 self.height = calc_height
 
     
@@ -118,7 +109,7 @@ class Block:
             raise ValueError("Provided block hash does not correspond to calculated block hash %s" %
                              block_hash_calc.hex())
 
-        version = raw[0:4][::-1]
+        chain_version = raw[0:4][::-1]
         prev_block = raw[4:36][::-1]
         merkle_root = raw[36:68][::-1]
         time = raw[68:72][::-1]
@@ -145,7 +136,7 @@ class Block:
             raise ValueError("Number of found transactions %d is not equal to expected number %d" %
                              (len(transactions), tx_count))
 
-        block = cls(block_hash, version, prev_block, merkle_root, time, bits, transactions, height,
+        block = cls(block_hash, chain_version, prev_block, merkle_root, time, bits, transactions, height,
                     network=network)
         block.txs_data = txs_data
         block.tx_count = tx_count
@@ -176,7 +167,7 @@ class Block:
         block_dict = {
             'block_hash': self.block_hash.hex(),
             'height': self.height,
-            'version': self.version_int,
+            'chain_version': self.chain_version_int,
             'prev_block': None if not self.prev_block else self.prev_block.hex(),
             'merkle_root': self.merkle_root.hex(),
             'timestamp': self.time,
@@ -195,7 +186,7 @@ class Block:
         Serialize raw block in bytes.
 
         A block consists of a 80 bytes header:
-        * version - 4 bytes
+        * chain_version - 4 bytes
         * previous block - 32 bytes
         * merkle root - 32 bytes
         * timestamp - 4 bytes
@@ -210,13 +201,13 @@ class Block:
         """
         if len(self.transactions) != self.tx_count or len(self.transactions) < 1:
             raise ValueError("Block contains incorrect number of transactions, can not serialize")
-        rb = self.version[::-1]
+        rb = self.chain_version[::-1]
         rb += self.prev_block[::-1]
         rb += self.merkle_root[::-1]
         rb += self.time.to_bytes(4, 'little')
         rb += self.bits[::-1]
         if len(rb) != 80:
-            raise ValueError("Missing or incorrect length of 1 of the block header variables: version, prev_block, "
+            raise ValueError("Missing or incorrect length of 1 of the block header variables: chain_version, prev_block, "
                              "merkle_root, time or bits .")
         rb += int_to_varbyteint(len(self.transactions))
         for t in self.transactions:
@@ -224,24 +215,22 @@ class Block:
         return rb
 
     @property
-    def version_bin(self):
+    def chain_version_bin(self):
         """
-        Get the block version as binary string. Since BIP9 protocol changes are signaled by changing one of the 29
-        last bits of the version number.
-
+        Get the block chain_version as binary string. 
         >>> from wialib.services.services import Service
         >>> srv = Service()
         >>> b = srv.getblock(450001)
-        >>> print(b.version_bin)
+        >>> print(b.chain_version_bin)
         00100000000000000000000000000010
 
         :return str:
         """
-        return bin(self.version_int)[2:].zfill(32)
+        return bin(self.chain_version_int)[2:].zfill(32)
 
-    def version_bips(self):
+    def chain_version(self):
         """
-        Extract version signaling information from the block's version number.
+        Extract chain_version signaling information from the block's version number.
 
         The block version shows which software the miner used to create the block. Changes to the bitcoin
         protocol are described in Bitcoin Improvement Proposals (BIPs) and a miner shows which BIPs it supports
