@@ -140,7 +140,7 @@ if __name__ == "__main__":
                         '%%p = public key, %%a = address')
     parser.add_argument('-p', metavar='passphrase', type=str, nargs='?',
                         help='Passphrase to protect ' +
-                        'BIP 0038 private keys')
+                        'WIA1 private keys')
     args = parser.parse_args()
     
     key_formatter = KeyFormatter()
