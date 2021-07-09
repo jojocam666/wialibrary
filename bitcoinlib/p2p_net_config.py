@@ -160,3 +160,40 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     #  break 
    #data += d
 	#return data
+	
+	
+class Bipm():
+	"""
+	Class to define and use stealthy message types on the network, such as transaction or block requests
+	:param bipm_type :specify if the bipm is a bipm_tx or bipm_blc
+	:type bipm_type : bool
+	"""
+	import transactions
+	import blocks
+	self.bipm_types = ["bipm_tx", "bipm_blc"]
+	
+	def get_request_type(self,request_type):
+		if new_transaction() = 1:
+			request_type = "new_transaction"
+		elif new_block() = 1:
+			request_type = "new_block"
+			return request_type
+	
+	def get_bipm_type(self,request_type):	
+	
+		if request_type = "new_transaction" :
+	   		bipm_type = bipm_types[0]
+		elif request_type = "new_block" :
+	   		bipm_type = bipm_types[1]
+	   	if not bipm_types[0] or not bipm_types[1]:
+			return None
+		return bipm_type
+	
+	def send_bipm_to_peer(self,bipm_type,msg):
+		"""
+		Send a specified type of bipm with its content to a random peer on the network
+		:param msg: the bipm,type and content,which are to send
+		:type msg: str
+		"""
+	   	
+	
