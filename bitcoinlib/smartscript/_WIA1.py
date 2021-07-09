@@ -232,40 +232,53 @@ class Wia1():
     """class to define wia's specific script of transaction locking
     """
     self.data = transaction
+    lockscript = []
+    originscript = []
     script = []
-    
+    def hash256(self,data):
+            data_string = json.dumps(data, sort_keys=True).encode()
+            hash256 = hashlib.sha256(data_string).hexdigest()
+  
+        return hash256_data
+   
     def WIA1_encrypt(self,data,public_key,rand_key,data):
         key_size = 32
         new_random_key = str(RNG.new().read(key_size))
+        script.append(hash256(data),new_random_key,data)
+        originscript.append(encrypt_rsa(script,public_key)#FIX ME:à la base la kpb est deja definie dans la fonction encrypt_rsa
         
         cif_data = encrypt_aes(data,new_random_key)
         cif_rd_key = encrypt_rsa(new_random_key)
         tx_signature = signature_data(data,new_random_key)
+        lockscript.append(tx_signature,cif_rd_key,cif_data)
         
-        script = []
-        script.append(tx_signature,cif_rd_key,cif_data)
-        
-        return script
+        return lockscript
+     
+    
     
     def WIA1_decrypt(self,script,private_key):
-        script = self.script
-       
-        for cif_data,cif_rd_key,tx_signature in script
+     
     
-        prime_tx = self.transaction
-        verif_hash = self.verif_hash
-        verif_rd_key = decrypt_rsa(cif_rd_key,new_random_key)
-        verif_data = decrypt_aes(cif_data,verif_rd_key)
-           
-        if verif_data == prime_tx:
-                return True
-                else 
-                return False
-        
+        lockscript = self.lockscript
+       
+            for cif_data,cif_rd_key,tx_signature in lockscript
+    
+            prime_tx = self.transaction
+            verif_hash = self.verif_hash
+            verif_rd_key = decrypt_rsa(cif_rd_key,new_random_key)
+            verif_data = decrypt_aes(cif_data,verif_rd_key)
+      
         if verif_hash == None:
             verif_hash = decrypt_aes(signature,verif_rd_key)
-            verif_hash == tx_signature
+          return verif_hash
         
+        if verif_hash = hash256(transaction) and verif_data == prime_tx  :
+            unlockscript = [verif_hash,verif_rd_key,verif_data]
+            
+        if unlockscript = decrypt_rsa(origin_script,private_key):#verifier s'il ny a pas besoin de serialiser les scripts
+            return True
+    return True
+
     
         
         
@@ -318,11 +331,7 @@ class Wia1():
   #return hashed_data384
 ..................
 
-#def hash256(data):
- #data_string = json.dumps(data, sort_keys=True).encode()
-  #hashed_data256 = hashlib.sha256(data_string).hexdigest()
-  
- # return hashed_data256
+#
 
 
 
