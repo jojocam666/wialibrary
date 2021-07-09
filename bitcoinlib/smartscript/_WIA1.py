@@ -231,7 +231,7 @@ class Wia1():
    
     """class to define wia's specific script of transaction locking
     """
-    self.transaction_data = data
+    self.data = transaction
     script = []
     
     def WIA1_encrypt(self,data,public_key,rand_key,data):
@@ -249,12 +249,22 @@ class Wia1():
     
     def WIA1_decrypt(self,script,private_key):
         script = self.script
+       
+        for cif_data,cif_rd_key,tx_signature in script
+    
         prime_tx = self.transaction
         verif_hash = self.verif_hash
-        verif_rd_key = decrypt_rsa(new_random_key)
+        verif_rd_key = decrypt_rsa(cif_rd_key,new_random_key)
+        verif_data = decrypt_aes(cif_data,verif_rd_key)
+           
+        if verif_data == prime_tx:
+                return True
+                else 
+                return False
         
-        if verif_hash = None:
-            verif_hash = 
+        if verif_hash == None:
+            verif_hash = decrypt_aes(signature,verif_rd_key)
+            verif_hash == tx_signature
         
     
         
