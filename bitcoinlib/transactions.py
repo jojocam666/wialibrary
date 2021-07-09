@@ -159,9 +159,9 @@ def transaction_deserialize(rawtx, network=DEFAULT_NETWORK, check_size=True):
                                len(rawtx[cursor:]))
     locktime = int.from_bytes(rawtx[cursor:cursor + 4][::-1], 'big')
 
-    return Transaction(inputs, outputs, locktime, version, network, size=cursor + 4, output_total=output_total,
+    transaction = Transaction(inputs, outputs, locktime, version, network, size=cursor + 4, output_total=output_total,
                        coinbase=coinbase, flag=flag, witness_type=witness_type, rawtx=rawtx)
-
+    return transaction
 
 def script_deserialize(script, script_types=None, locking_script=None, size_bytes_check=True):
     """
