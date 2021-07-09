@@ -114,78 +114,24 @@ def new_address():
     
     return address
     
-.....................    
- 
- 
- # HACHAGE DE DONNEES EN 256,384,512   
-   
-   
-   
- import hashlib
-  
-def hash384(data)
-  data_string = json.dumps(data, sort_keys=True).encode()
-  hashed_data384 = hashlib.sha1(data_string).hexdigest()
-  
-  return hashed_data384
-
-
-.....
-
-def hash512(data)
-  data_string = json.dumps(data, sort_keys=True).encode()
-  hashed_data512 = hashlib.sha512(data_string).hexdigest()
-  
-  return hashed_data512
-
-   @staticmethod
-    def hash(block):
-        """
-        Creates a SHA-256 hash of a Block
-        :param block: Block
-        """
-
-        # We must make sure that the Dictionary is Ordered, or we'll have inconsistent hashes
-        block_string = json.dumps(block, sort_keys=True).encode()
-        return hashlib.sha256(block_string).hexdigest()
-        
-    def hash(transaction):
-        """
-        Creates a SHA-256 hash of a transaction
-        :param block: transaction
-        """
-        def hash384(data)
-  data_string = json.dumps(data, sort_keys=True).encode()
-  hashed_data384 = hashlib.sha1(data_string).hexdigest()
-  
-  return hashed_data384
-..................
-
-def hash256(data):
- data_string = json.dumps(data, sort_keys=True).encode()
-  hashed_data256 = hashlib.sha256(data_string).hexdigest()
-  
-  return hashed_data256
-
-
 
         
   ............................
   
- # CHIFFREMENT SYMETRIQUE AES MODE CBC
+ # SYMMETRICAL ENCRYPTION AES CBC MODE
  
  
  
- def randomCryptoNumber():
-    return RNG.new().read(AES.block_size) #Retourne un nombre aléatoire
+  def randomCryptoNumber():
+    return RNG.new().read(AES.block_size) #Returns a random number
 
   
   def append_data(data):
-    # si la taille de donnée fait 16 byte, aucun ajout
+    # if the data size is 16 byte, no addition
     if len(data) % 16 == 0:
         return data
 
-    # On enlève un byte pour ajouter le 0x80
+    # We remove a byte to add the 0x80
 
     dataAppend = 15 - (len(data) % 16)
 
@@ -215,9 +161,9 @@ def generateCryptoKey():
 
 def encrypt_aes(data, key):
 
-  #Encrypte les donnée utilisant AES en mode CBC
+  #Encrypts data using AES in CBC mode
 
-  data = ajout_data(data)
+  data = append_data(data)
   number = randomCryptoNumber()
   aes = AES.new(key, AES.MODE_CBC, number)
   msg_crypt = aes.encrypt(data)
@@ -226,7 +172,7 @@ def encrypt_aes(data, key):
 
 def decrypt_aes(ciphertext, key):
 
-  #Decrypt un ciphertext encrypté avec l'AES en mode CBC
+  #Decrypts a ciphertext encrypted with AES in CBC mode
 
   if len(ciphertext) <= AES.block_size:
       raise Exception("Invalid ciphertext.")
@@ -235,22 +181,23 @@ def decrypt_aes(ciphertext, key):
   aes = AES.new(key, AES.MODE_CBC, number)
   data = aes.decrypt(ciphertext)
 
-  return remove_data(data) #Enleve le padding ajouté
+  return remove_data(data) #Remove added padding
 ...................
 
-# PROCEDE DE SIGNATURE
-# PREPARATION DU MESSAGE SIGNE
+# SIGNATURE PROCEDURE
+# PREPARATION OF THE SIGNED MESSAGE
 
 
-def signature_data(self,public_key,private_key,data):
+def signature_data(self,data,key):
 
+    key = self.key
     data = ""
     if data =! None:
     condensat_data =  hash256(data)
     
     if condensat_data =! None:
     
-    signature = encrypt_aes(self,condensat_data)
+    signature = encrypt_aes(self,condensat_data,key)
     
     return signature
     
@@ -265,7 +212,7 @@ def signature_data(self,public_key,private_key,data):
     
     return signed_message
     
-#................................................................. RECEPTION DU MESSAGE....................................................................
+#................................................................. RECEIPT OF MESSAGE....................................................................
 def decrypt_signature(self):
     
     return decrypt_rsa(self,signature)
@@ -277,6 +224,95 @@ def _get_authentic_signature(self):
       
       return True
     
+    
+class Wia1():
+    
+    def __init__(self, locking, unlocking, script_type, script = None):
+   
+    """class to define wia's specific script of transaction locking
+    """
+    self.transaction_data = data
+    script = []
+    
+    def WIA1_encrypt(self,data,public_key,rand_key,data):
+        key_size = 32
+        new_random_key = str(RNG.new().read(key_size))
+        
+        cif_data = encrypt_aes(data,new_random_key)
+        cif_rd_key = encrypt_rsa(new_random_key)
+        tx_signature = signature_data(data,new_random_key)
+        
+        script = []
+        script.append(tx_signature,cif_rd_key,cif_data)
+        
+        return script
+    
+    def WIA1_decrypt(self,script,private_key):
+        script = self.script
+        prime_tx = self.transaction
+        verif_hash = self.verif_hash
+        verif_rd_key = decrypt_rsa(new_random_key)
+        
+        if verif_hash = None:
+            verif_hash = 
+        
+    
+        
+        
+    
 .....................
+
+.....................    
+ 
+ 
+ # data hash to sha(256,384,512)   
+   
+   
+   
+ #/import hashlib
+  
+#def hash384(data)
+ # data_string = json.dumps(data, sort_keys=True).encode()
+  #hashed_data384 = hashlib.sha1(data_string).hexdigest()
+  
+  #return hashed_data384
+
+
+
+#def hash512(data)
+ # data_string = json.dumps(data, sort_keys=True).encode()
+  #hashed_data512 = hashlib.sha512(data_string).hexdigest()
+  
+ # return hashed_data512
+
+   #@staticmethod
+    #def hash(block):
+        """
+        Creates a SHA-256 hash of a Block
+        :param block: Block
+        """
+
+        # We must make sure that the Dictionary is Ordered, or we'll have inconsistent hashes
+      #  block_string = json.dumps(block, sort_keys=True).encode()
+     #   return hashlib.sha256(block_string).hexdigest()
+        
+    #def hash(transaction):
+        """
+        Creates a SHA-256 hash of a transaction
+        :param block: transaction
+        """
+   #     def hash384(data)
+  #data_string = json.dumps(data, sort_keys=True).encode()
+  #hashed_data384 = hashlib.sha1(data_string).hexdigest()
+  
+  #return hashed_data384
+..................
+
+#def hash256(data):
+ #data_string = json.dumps(data, sort_keys=True).encode()
+  #hashed_data256 = hashlib.sha256(data_string).hexdigest()
+  
+ # return hashed_data256
+
 
 
