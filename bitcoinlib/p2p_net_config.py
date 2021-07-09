@@ -1,4 +1,4 @@
-# code for a p2p network implementation a initialization
+# code for a p2p network implementation and initialization
 
 
 
@@ -37,16 +37,16 @@ class Peer():
     
   
   def makeserversocket( self, port, backlog=5 ):
-	s = socket.socket( socket.AF_INET, socket.SOCK_STREAM )
-	s.setsockopt( socket.SOL_SOCKET, socket.SO_REUSEADDR, 1 )
-	s.bind( ( '', port ) )
-	s.listen( backlog )
+	s = socket.socket( socket.AF_INET, socket.SOCK_STREAM ) #address family of Ipv4 type  for AF_INET and protocol type = TCP for SOCK_STREAM
+	s.setsockopt( socket.SOL_SOCKET, socket.SO_REUSEADDR, 1 ) 
+	s.bind( ( '', port ) ) #Binding the listening socket to a port
+	s.listen( backlog ) #Listening socket
 	return s
 
  s = self.makeserversocket( self.serverport )
   
   while 1:
-     clientsock, clientaddr = s.accept()
+     clientsock, clientaddr = s.accept() #Accept a connection from the client
   
      t = threading.Thread( target = self.__handlepeer, args = [ clientsock ] )
      t.start()
@@ -120,15 +120,17 @@ def connectandsend( self, host, port, msgtype, msgdata, pid=None, waitreply=True
 	msgreply = []   # list of replies
 	try:
 	    peerconn = BTPeerConnection( pid, host, port, debug=self.debug )
-	    peerconn.senddata( msgtype, msgdata )
+	    data = [msgtype, msgdata]
+	    peerconn.sendall(data.encode())
 	    self.__debug( 'Sent %s: %s' % (pid, msgtype) )
 	    
 	    if waitreply:
-		onereply = peerconn.recvdata()
-		while (onereply != (None,None)):
+		onereply = peerconn.recv(1024)
+		nonedata = [None,None]
+		while (onereply != (nonedata)):
 		    msgreply.append( onereply )
 		    self.__debug( 'Got reply %s: %s' % ( pid, str(msgreply) ) )
-		    onereply = peerconn.recvdata()
+		    onereply = peerconn.recv(1024)
 	    peerconn.close()
 	except KeyboardInterrupt:
 	    raise
@@ -138,4 +140,23 @@ def connectandsend( self, host, port, msgtype, msgdata, pid=None, waitreply=True
 	
 	return msgreply
 
-    # end connectsend method  
+    # end connectsend method
+	
+	
+	
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: 
+    s.connect((serverhost, serverport)) 
+    s.sendall(msgdata) 
+    onereply = s.recv(1024) 
+    print(onereply)
+	
+
+	
+#def recvall(self,data)
+#data = b'' 
+#while True: 
+   #d = conn.recv(buff_size) 
+   #if not d or len(d) < buff_size: 
+    #  break 
+   #data += d
+	#return data
