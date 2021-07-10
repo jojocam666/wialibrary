@@ -38,7 +38,7 @@ def transaction_deserialize(rawtx, network=DEFAULT_NETWORK, check_size=True):
     
     :param rawtx: Raw transaction as hexadecimal string or bytes
     :type rawtx: str, bytes
-    :param network: Network code, i.e. 'wia', 'testnet', 'bitcoin', etc. Leave emtpy for default network
+    :param network: Network code, i.e. 'wia', 'testnet', etc. Leave emtpy for default network
     :type network: str, Network
     :param check_size: Check if not bytes are left when parsing is finished. Disable when parsing list of transactions, such as the transactions in a raw block. Default is True
     :type check_size: bool
@@ -47,10 +47,10 @@ def transaction_deserialize(rawtx, network=DEFAULT_NETWORK, check_size=True):
     """
 
     rawtx = to_bytes(rawtx)
-    version = rawtx[0:4][::-1]
+    chain_version = rawtx[0:4][::-1]
     coinbase = False
     flag = None
-    witness_type = 'legacy'
+    script_type = 'WIA1'
     cursor = 4
     if rawtx[4:5] == b'\0':
         flag = rawtx[5:6]
