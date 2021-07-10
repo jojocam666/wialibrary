@@ -9,7 +9,7 @@ import os
 import six
 from Crypto import Random
 from Crypto.PublicKey import RSA
-
+from wialib import keys
 
 
 
@@ -24,7 +24,7 @@ class RSAEncryption(object):
     def encrypt_rsa(self, message):
         public_key = self._get_public_key()
         public_key_object = RSA.importKey(public_key)
-        random_phrase = 'M'
+        random_phrase = ""
         encrypted_message = public_key_object.encrypt(self._to_format_for_encrypt(message), random_phrase)[0]
         # use base64 for save encrypted_message in database without problems with encoding
         return base64.b64encode(encrypted_message)
@@ -105,14 +105,9 @@ class ProductionEncryption(RSAEncryption):
 message = 'Hello мой friend'
 encrypted_mes = ProductionEncryption().encrypt(message)
 decrypted_mes = ProductionEncryption().decrypt(message)
-......................
 
    
-def new_address():
-    
-    address = RIPEMD160( SHA256( public_key ) )
-    
-    return address
+
     
 
         
@@ -242,10 +237,13 @@ class Wia1():
         return hash256_data
    
     def WIA1_encrypt(self,data,public_key,rand_key,data):
+        """Specific encryption process for transactions on the Wia blockchain
+        """
+        
         key_size = 32
-        new_random_key = str(RNG.new().read(key_size))
+        new_random_key = str(RNG.new().read(key_size)) #generate a random symetrical key for aes encryption mode
         script.append(hash256(data),new_random_key,data)
-        originscript.append(encrypt_rsa(script,public_key)#FIX ME:à la base la kpb est deja definie dans la fonction encrypt_rsa
+        originscript.append(encrypt_rsa(script)) 
         
         cif_data = encrypt_aes(data,new_random_key)
         cif_rd_key = encrypt_rsa(new_random_key)
