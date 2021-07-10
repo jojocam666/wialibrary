@@ -7,7 +7,6 @@ import json
 import pickle
 import random
 from wialib.encoding import *
-from wialib.config.opcodes import *
 from wialib.keys import HDKey, Key, deserialize_address, Address, sign, verify, Signature
 from wialib.networks import Network
 from wialib.values import Value, value_to_lio
@@ -55,7 +54,7 @@ def transaction_deserialize(rawtx, network=DEFAULT_NETWORK, check_size=True):
     if rawtx[4:5] == b'\0':
         flag = rawtx[5:6]
         if flag == b'\1':
-            witness_type = 'segwit'
+            script_type = 'WIA1'
         cursor += 2
     n_inputs, size = varbyteint_to_int(rawtx[cursor:cursor + 9])
     cursor += size
