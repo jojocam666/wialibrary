@@ -98,7 +98,7 @@ def transaction_deserialize(rawtx, network=DEFAULT_NETWORK, check_size=True):
         output_total += value
     if not outputs:
         raise TransactionError("Error no outputs found in this transaction")
-    if witness_type == 'segwit':
+    if script_type == 'WIA1':
         for n in range(0, len(inputs)):
             n_items, size = varbyteint_to_int(rawtx[cursor:cursor + 9])
             cursor += size
@@ -112,7 +112,7 @@ def transaction_deserialize(rawtx, network=DEFAULT_NETWORK, check_size=True):
                 witnesses.append(witness)
             if witnesses and not coinbase:
                 script_type = inputs[n].script_type
-                witness_script_type = 'sig_pubkey'
+                witness_script_type = ''
                 signatures = []
                 keys = []
                 sigs_required = 1
