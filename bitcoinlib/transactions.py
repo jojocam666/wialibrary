@@ -73,8 +73,8 @@ def transaction_deserialize(rawtx, network=DEFAULT_NETWORK, check_size=True):
         cursor += size
         unlocking_script = rawtx[cursor:cursor + unlocking_script_size]
         inp_type = 'legacy'
-        if witness_type == 'segwit' and not unlocking_script_size:
-            inp_type = 'segwit'
+        if script_type == 'WIA1' and not unlocking_script_size:
+            inp_type = 'legacy'
         cursor += unlocking_script_size
         sequence_number = rawtx[cursor:cursor + 4]
         cursor += 4
