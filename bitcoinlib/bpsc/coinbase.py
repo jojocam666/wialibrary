@@ -25,7 +25,8 @@
 #  coinbase_value = 1000.000000000000000000000000
 #  import update_req_time as urt
 #  if urt.a =+:
-#    coinbase_value = coinbase_value 
+#    coinbase_value = coinbase_value/1.61
+#   return coinbase_value
 
  
 #
