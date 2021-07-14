@@ -1,4 +1,33 @@
 
+#the bpsc is in charge of the mining of new blocks to the blockchain; mining a block means  #01.take entire current tx informations for the block from the mempool and verify that the block is valid
+#this work is done by the whole connected nodes,who receive bipm_tx in their mempool and verify them with their Client; next,#02.check the full block information from the block relayer(the last node to do a transaction for this block)
+#and verify the block; after this #03.the bpsc check the full block(only when is confirmation_ratio as succesfully been achieved) and add it to the chain in three different modes:ligth,for the 
+#majority of the nodes; complete(full blockchain files and wallets states) and basic(completely all informations); when added, the new block and blockchain are both broadcasted on the network
+#and every node must update his chain(automatically done by the Client when connexion turned on)
+#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import hashlib
 import json
 from wialib import blocks
