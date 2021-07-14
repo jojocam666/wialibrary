@@ -27,7 +27,12 @@
 #  if urt.a =+:
 #    coinbase_value = coinbase_value/1.61
 #   return coinbase_value
+#
+#def divide_coinbase(): #//in order to determine the amount of the rewarding of the best nodes in the blockchain at the last block,excepting the mining contract
+#if node.mining_state = "best": #//the state of the node concerning the mining of the previous_block or last_block
+#   node.rewarding = True
+#   node.reward = self.reward(relays_n
 
- 
+#
 #
 #
