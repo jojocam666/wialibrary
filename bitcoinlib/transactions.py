@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 #    TRANSACTION class to create, verify and sign Transactions
+#there are three types of transactions on the blockchain wia : the regular, bpsc_serial and the coinbase
+#regular are done between regular nodes in the nodes; bpsc_serial implies tx that concern the bpsc(as sender or recipient) and the coinbase is the first tx of a block
+#having no sender but used to create the money on the blockchain
+#each of these three types of tx have its own mecanism and is different from the others
+#each tx has a script code which is used to verify the validity of a transaction,especially the owner's identity
+#but the type of script is also different from a tx type to another
 
 
 from datetime import datetime
