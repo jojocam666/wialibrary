@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#a block has three parts:the header,the data and the segregated scripts of the tx of the block
 
 from wialib.encoding import *
 from wialib.networks import Network
