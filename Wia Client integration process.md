@@ -25,3 +25,6 @@ to this package is added 2°):
 -crypted transactions and
 - the cipher of the symetric key used to encrypt the transactions
 There are three types of tx: normal, bpsc_serial and coinbase
+
+  *There are several types of locks on the wia blockchain, such as hybrid closing scripts (the classic one), kneaded padlock scripts and multi-signature scripts
+  *A transaction can take several forms: change of owner,in case of equal input-output value; input distributed to several outputs; several outputs for a single output.
